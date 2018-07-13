@@ -21,7 +21,26 @@
 static NSString *kNASCallback = NAS_CALLBACK;
 static NSString *kNASCheckUrl = NAS_CHECK_URL;
 
+static NSString *kAppName;
+static UIImage *kAppIcon;
+static NSString *kAppScheme;
+
+static void (^kAuthBlock)(NSString *);
+
 @implementation NASSmartContracts
+
++ (void)setAppName:(NSString *)name icon:(UIImage *)icon scheme:(NSString *)scheme {
+    kAppName = name;
+    kAppIcon = icon;
+    kAppScheme = scheme;
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidBecomeActiveNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        if (kAuthBlock) {
+            kAuthBlock(nil);
+            kAuthBlock = nil;
+        }
+    }];
+}
 
 + (void)debug:(BOOL)debug {
     if (debug) {
@@ -64,6 +83,46 @@ static NSString *kNASCheckUrl = NAS_CHECK_URL;
                                       }];
 }
 
++ (BOOL)handleURL:(NSURL *)url {
+    //TODO: analyse url
+    NSString *prefix = [NSString stringWithFormat:@"%@://virtual?params=", kAppScheme];
+    if (![url.absoluteString.lowercaseString hasPrefix:prefix]) {
+        return NO;
+    }
+    NSString *params = [url.absoluteString substringFromIndex:prefix.length].stringByRemovingPercentEncoding;
+    return [self handleURLParams:params];
+}
+
++ (BOOL)handleURLParams:(NSString *)params {
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:[params dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+    if ([dict isKindOfClass:NSDictionary.class]) {
+        NSString *action = [NSString stringWithFormat:@"%@", dict[@"action"]];
+        NSInteger code = [dict[@"code"] integerValue];
+        NSString *data = nil;
+        if (dict[@"data"]) {
+            data = [NSString stringWithFormat:@"%@", dict[@"data"]];
+        }
+        
+        if ([action isEqualToString:@"auth"]) {
+            //钱包授权结果
+            if (code == 0) {
+                kAuthBlock ? kAuthBlock(data) : nil;
+            } else {
+                kAuthBlock ? kAuthBlock(nil) : nil;
+            }
+            kAuthBlock = nil;
+            return YES;
+        } else if ([action isEqualToString:@"pay"]) {
+            //TODO:钱包支付结果
+            return YES;
+        } else if ([action isEqualToString:@"call"]) {
+            //TODO:钱包call结果
+            return YES;
+        }
+    }
+    return NO;
+}
+
 + (NSString *)queryValueWithSerialNumber:(NSString *)sn andInfo:(NSDictionary *)info {
     NSMutableDictionary *dict = [NSMutableDictionary
                                  dictionaryWithDictionary:@{
@@ -78,8 +137,41 @@ static NSString *kNASCheckUrl = NAS_CHECK_URL;
     dict[@"pageParams"] = pageParams;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
     return [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]
-            stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet
-                                                                URLPathAllowedCharacterSet]];
+            stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
+}
+
++ (NSString *)authQureyValueWithInfo:(NSDictionary *)info {
+    NSMutableDictionary *dict = [NSMutableDictionary
+                                 dictionaryWithDictionary:@{
+                                                            @"category" : @"jump",
+                                                            @"des" : @"auth"
+                                                            }];
+    if (info) {
+        dict[@"pageParams"] = info;
+    }
+    if (kAppName && kAppIcon && kAppScheme) {
+        //base64 encode image
+        NSData *data = UIImageJPEGRepresentation(kAppIcon, 0.9f);
+        NSString *encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        
+        dict[@"dapp"] = @{@"name":kAppName,
+                          @"icon":encodedImageStr,
+                          @"scheme":kAppScheme
+                          };
+    }
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
+    return [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]
+            stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
+}
+
++ (NSError *)authWithInfo:(NSDictionary *)info
+                 complete:(void (^)(NSString *address))complete {
+    //TODO: JUMP TO AUTH
+    kAuthBlock = complete;
+    
+    NSString *url = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
+                     [self authQureyValueWithInfo:info]];
+    return [self openUrl:url];
 }
 
 + (NSError *)payNas:(NSNumber *)nas

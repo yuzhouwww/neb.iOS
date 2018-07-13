@@ -28,6 +28,18 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)auth:(id)sender {
+    self.textView.text = @"正在请求授权...";
+    __weak typeof(self) wself = self;
+    [NASSmartContracts authWithInfo:nil complete:^(NSString *walletAddress) {
+        if (walletAddress.length) {
+            wself.textView.text = [NSString stringWithFormat:@"授权成功，钱包地址：%@", walletAddress];
+        } else {
+            wself.textView.text = @"授权失败";
+        }
+    }];
+}
+
 - (IBAction)pay:(id)sender {
     self.sn = [NASSmartContracts randomCodeWithLength:32];
     NSError *error = [NASSmartContracts payNas:@(0.0001)

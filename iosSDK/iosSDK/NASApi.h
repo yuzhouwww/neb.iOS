@@ -86,7 +86,7 @@
               errorHandler:(void (^)(NSString *msg))errorHandler;
 
 /**
- * Get transactionReceipt info by tansaction hash. If the transaction not submit or only submit and not packaged on chain, it will reurn not found error.
+ * Get transactionReceipt info by tansaction hash. If the transaction not submit or only submit and not packaged on chain, it will return not found error.
  **/
 + (void)fetchTransactionReceiptByHash:(NSString *)hash
                 withCompletionHandler:(void (^)(NSDictionary *data))handler

@@ -6,6 +6,7 @@
 //
 
 #import "AppDelegate.h"
+#import <NASSmartContracts.h>
 
 @interface AppDelegate ()
 
@@ -16,6 +17,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [NASSmartContracts setAppName:@"SDK demo" icon:[UIImage imageNamed:@"icon"] scheme:@"sdk.demo"];
     return YES;
 }
 
@@ -46,5 +48,18 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    if ([NASSmartContracts handleURL:url]) {
+        return YES;
+    }
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    if ([NASSmartContracts handleURL:url]) {
+        return YES;
+    }
+    return YES;
+}
 
 @end
