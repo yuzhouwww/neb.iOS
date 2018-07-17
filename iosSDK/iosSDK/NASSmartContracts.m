@@ -89,10 +89,11 @@ static void (^kPayBlock)(BOOL, NSString *);
 
 + (NSError *)payNas:(NSNumber *)nas
           toAddress:(NSString *)address
-   withSerialNumber:(NSString *)sn
-       forGoodsName:(NSString *)name
-            andDesc:(NSString *)desc
-           complete:(void (^)(BOOL, NSString *))complete {
+       serialNumber:(NSString *)sn
+          goodsName:(NSString *)name
+        description:(NSString *)desc
+        callbackURL:(NSString *)url
+           complete:(void (^)(BOOL success, NSString *txHash))complete {
     NSNumber *wei = @(1000000000000000000L * [nas doubleValue]);
     NSDictionary *info = @{
                            @"goods" : @{
@@ -107,23 +108,24 @@ static void (^kPayBlock)(BOOL, NSString *);
                                            },
                                    @"currency" : @"NAS"
                                    },
-                           @"callback" : kNASCallback
+                           @"callback" : url ?: kNASCallback
                            };
     
     kPayBlock = complete;
-    NSString *url = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
+    NSString *urlString = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
                      [self queryValueWithSerialNumber:sn andInfo:info]];
-    return [self openUrl:url];
+    return [self openUrl:urlString];
 }
 
-+ (NSError *)callWithMethod:(NSString *)method
-                    andArgs:(NSArray *)args
-                     payNas:(NSNumber *)nas
-                  toAddress:(NSString *)address
-           withSerialNumber:(NSString *)sn
-               forGoodsName:(NSString *)name
-                    andDesc:(NSString *)desc
-                   complete:(void (^)(BOOL, NSString *))complete {
++ (NSError *)callMethod:(NSString *)method
+               withArgs:(NSArray *)args
+                 payNas:(NSNumber *)nas
+              toAddress:(NSString *)address
+           serialNumber:(NSString *)sn
+              goodsName:(NSString *)name
+            description:(NSString *)desc
+            callbackURL:(NSString *)url
+               complete:(void (^)(BOOL success, NSString *txHash))complete {
     NSNumber *wei = @(1000000000000000000L * [nas doubleValue]);
     NSData *argsData = [NSJSONSerialization dataWithJSONObject:args options:0 error:nil];
     NSDictionary *info = @{
@@ -141,13 +143,13 @@ static void (^kPayBlock)(BOOL, NSString *);
                                            },
                                    @"currency" : @"NAS"
                                    },
-                           @"callback" : kNASCallback
+                           @"callback" : url ?: kNASCallback
                            };
     
     kPayBlock = complete;
-    NSString *url = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
+    NSString *urlString = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
                      [self queryValueWithSerialNumber:sn andInfo:info]];
-    return [self openUrl:url];
+    return [self openUrl:urlString];
 }
 
 + (void)checkStatusWithSerialNumber:(NSString *)number

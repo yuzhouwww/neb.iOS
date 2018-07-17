@@ -46,7 +46,7 @@
  @param complete called with a wallet address while done
  @return error occured when open NASNano App
  */
-+ (NSError *)authWithInfo:(NSDictionary *)info
++ (NSError *)authWithInfo:(nullable NSDictionary *)info
                  complete:(void (^)(NSString *walletAddress))complete;
 
 /**
@@ -54,22 +54,24 @@
  **/
 + (NSError *)payNas:(NSNumber *)nas
           toAddress:(NSString *)address
-   withSerialNumber:(NSString *)sn
-       forGoodsName:(NSString *)name
-            andDesc:(NSString *)desc
+       serialNumber:(NSString *)sn
+          goodsName:(NSString *)name
+        description:(NSString *)desc
+        callbackURL:(NSString *)url
            complete:(void (^)(BOOL success, NSString *txHash))complete;
 
 /**
  * Call a smart contract function. Return nil if success.
  **/
-+ (NSError *)callWithMethod:(NSString *)method
-                    andArgs:(NSArray *)args
-                     payNas:(NSNumber *)nas
-                  toAddress:(NSString *)address
-           withSerialNumber:(NSString *)sn
-               forGoodsName:(NSString *)name
-                    andDesc:(NSString *)desc
-                   complete:(void (^)(BOOL success, NSString *txHash))complete;
++ (NSError *)callMethod:(NSString *)method
+               withArgs:(NSArray *)args
+                 payNas:(NSNumber *)nas
+              toAddress:(NSString *)address
+           serialNumber:(NSString *)sn
+              goodsName:(NSString *)name
+            description:(NSString *)desc
+            callbackURL:(NSString *)url
+               complete:(void (^)(BOOL success, NSString *txHash))complete;
 
 /**
  * Check status for an action.

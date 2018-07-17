@@ -44,9 +44,10 @@
     self.sn = [NASSmartContracts randomSerialNumber];
     NSError *error = [NASSmartContracts payNas:@(0.0001)
                                      toAddress:@"n1RZfatTFvkXPUa8M9bGJyV8AZmjLQZQzrt"
-                              withSerialNumber:self.sn
-                                  forGoodsName:@"test1"
-                                       andDesc:@"desc"
+                                  serialNumber:self.sn
+                                     goodsName:@"test1"
+                                   description:@"desc"
+                                   callbackURL:nil
                                       complete:^(BOOL success, NSString *txHash) {
                                           if (success) {
                                               self.textView.text = [NSString stringWithFormat:@"Pay succeed! txHash:\n%@", txHash];
@@ -64,14 +65,15 @@
 
 - (IBAction)call:(id)sender {
     self.sn = [NASSmartContracts randomSerialNumber];
-    NSError *error = [NASSmartContracts callWithMethod:@"save"
-                                               andArgs:@[@"key111", @"value111"]
-                                                payNas:@(0)
-                                             toAddress:@"n1zVUmH3BBebksT4LD5gMiWgNU9q3AMj3se"
-                                      withSerialNumber:self.sn
-                                          forGoodsName:@"test2"
-                                               andDesc:@"desc2"
-                                              complete:^(BOOL success, NSString *txHash) {
+    NSError *error = [NASSmartContracts callMethod:@"save"
+                                          withArgs:@[@"key111", @"value111"]
+                                            payNas:@(0)
+                                         toAddress:@"n1zVUmH3BBebksT4LD5gMiWgNU9q3AMj3se"
+                                      serialNumber:self.sn
+                                         goodsName:@"test2"
+                                       description:@"desc2"
+                                       callbackURL:nil
+                                          complete:^(BOOL success, NSString *txHash) {
                                                   if (success) {
                                                       self.textView.text = [NSString stringWithFormat:@"Call succeed! txHash:\n%@", txHash];
                                                   } else {
