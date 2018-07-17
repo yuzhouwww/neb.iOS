@@ -18,6 +18,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [NASSmartContracts setAppName:@"SDK demo" icon:[UIImage imageNamed:@"icon"] scheme:@"sdk.demo"];
+    [NASSmartContracts debug:YES];
     return YES;
 }
 

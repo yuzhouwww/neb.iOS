@@ -26,8 +26,11 @@ static UIImage *kAppIcon;
 static NSString *kAppScheme;
 
 static void (^kAuthBlock)(NSString *);
+static void (^kPayBlock)(BOOL, NSString *);
 
 @implementation NASSmartContracts
+
+#pragma mark - public
 
 + (void)setAppName:(NSString *)name icon:(UIImage *)icon scheme:(NSString *)scheme {
     kAppName = name;
@@ -38,6 +41,10 @@ static void (^kAuthBlock)(NSString *);
         if (kAuthBlock) {
             kAuthBlock(nil);
             kAuthBlock = nil;
+        }
+        if (kPayBlock) {
+            kPayBlock(NO, nil);
+            kPayBlock = nil;
         }
     }];
 }
@@ -60,113 +67,19 @@ static void (^kAuthBlock)(NSString *);
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/cn/app/id1281191905?mt=8"]];
 }
 
-+ (NSString *)randomCodeWithLength:(NSInteger)length {
++ (NSString *)randomSerialNumber {
     static NSString *charSet = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     NSMutableString *string = [NSMutableString string];
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < 32; i++) {
         int index = arc4random() % [charSet length];
         [string appendString:[charSet substringWithRange:NSMakeRange(index, 1)]];
     }
     return [string copy];
 }
 
-+ (NSError *)openUrl:(NSString *)urlString {
-    NSURL *url = [NSURL URLWithString:urlString];
-    if ([[UIApplication sharedApplication] canOpenURL:url]) {
-        [[UIApplication sharedApplication] openURL:url];
-        return nil;
-    }
-    return [NSError errorWithDomain:@"Need NasNano"
-                               code:-1
-                           userInfo:@{
-                                      @"msg" : @"没安装Nebulas智能数字钱包，请下载安装"
-                                      }];
-}
-
-+ (BOOL)handleURL:(NSURL *)url {
-    //TODO: analyse url
-    NSString *prefix = [NSString stringWithFormat:@"%@://virtual?params=", kAppScheme];
-    if (![url.absoluteString.lowercaseString hasPrefix:prefix]) {
-        return NO;
-    }
-    NSString *params = [url.absoluteString substringFromIndex:prefix.length].stringByRemovingPercentEncoding;
-    return [self handleURLParams:params];
-}
-
-+ (BOOL)handleURLParams:(NSString *)params {
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:[params dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-    if ([dict isKindOfClass:NSDictionary.class]) {
-        NSString *action = [NSString stringWithFormat:@"%@", dict[@"action"]];
-        NSInteger code = [dict[@"code"] integerValue];
-        NSString *data = nil;
-        if (dict[@"data"]) {
-            data = [NSString stringWithFormat:@"%@", dict[@"data"]];
-        }
-        
-        if ([action isEqualToString:@"auth"]) {
-            //钱包授权结果
-            if (code == 0) {
-                kAuthBlock ? kAuthBlock(data) : nil;
-            } else {
-                kAuthBlock ? kAuthBlock(nil) : nil;
-            }
-            kAuthBlock = nil;
-            return YES;
-        } else if ([action isEqualToString:@"pay"]) {
-            //TODO:钱包支付结果
-            return YES;
-        } else if ([action isEqualToString:@"call"]) {
-            //TODO:钱包call结果
-            return YES;
-        }
-    }
-    return NO;
-}
-
-+ (NSString *)queryValueWithSerialNumber:(NSString *)sn andInfo:(NSDictionary *)info {
-    NSMutableDictionary *dict = [NSMutableDictionary
-                                 dictionaryWithDictionary:@{
-                                                            @"category" : @"jump",
-                                                            @"des" : @"confirmTransfer"
-                                                            }];
-    NSMutableDictionary *pageParams = [NSMutableDictionary
-                                       dictionaryWithDictionary:@{ @"serialNumber" : sn ?: @"" }];
-    if (info) {
-        [pageParams addEntriesFromDictionary:info];
-    }
-    dict[@"pageParams"] = pageParams;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
-    return [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]
-            stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
-}
-
-+ (NSString *)authQureyValueWithInfo:(NSDictionary *)info {
-    NSMutableDictionary *dict = [NSMutableDictionary
-                                 dictionaryWithDictionary:@{
-                                                            @"category" : @"jump",
-                                                            @"des" : @"auth"
-                                                            }];
-    if (info) {
-        dict[@"pageParams"] = info;
-    }
-    if (kAppName && kAppIcon && kAppScheme) {
-        //base64 encode image
-        NSData *data = UIImageJPEGRepresentation(kAppIcon, 0.9f);
-        NSString *encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-        
-        dict[@"dapp"] = @{@"name":kAppName,
-                          @"icon":encodedImageStr,
-                          @"scheme":kAppScheme
-                          };
-    }
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
-    return [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]
-            stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
-}
 
 + (NSError *)authWithInfo:(NSDictionary *)info
                  complete:(void (^)(NSString *address))complete {
-    //TODO: JUMP TO AUTH
     kAuthBlock = complete;
     
     NSString *url = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
@@ -178,7 +91,8 @@ static void (^kAuthBlock)(NSString *);
           toAddress:(NSString *)address
    withSerialNumber:(NSString *)sn
        forGoodsName:(NSString *)name
-            andDesc:(NSString *)desc {
+            andDesc:(NSString *)desc
+           complete:(void (^)(BOOL, NSString *))complete {
     NSNumber *wei = @(1000000000000000000L * [nas doubleValue]);
     NSDictionary *info = @{
                            @"goods" : @{
@@ -195,6 +109,8 @@ static void (^kAuthBlock)(NSString *);
                                    },
                            @"callback" : kNASCallback
                            };
+    
+    kPayBlock = complete;
     NSString *url = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
                      [self queryValueWithSerialNumber:sn andInfo:info]];
     return [self openUrl:url];
@@ -206,7 +122,8 @@ static void (^kAuthBlock)(NSString *);
                   toAddress:(NSString *)address
            withSerialNumber:(NSString *)sn
                forGoodsName:(NSString *)name
-                    andDesc:(NSString *)desc {
+                    andDesc:(NSString *)desc
+                   complete:(void (^)(BOOL, NSString *))complete {
     NSNumber *wei = @(1000000000000000000L * [nas doubleValue]);
     NSData *argsData = [NSJSONSerialization dataWithJSONObject:args options:0 error:nil];
     NSDictionary *info = @{
@@ -226,6 +143,8 @@ static void (^kAuthBlock)(NSString *);
                                    },
                            @"callback" : kNASCallback
                            };
+    
+    kPayBlock = complete;
     NSString *url = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
                      [self queryValueWithSerialNumber:sn andInfo:info]];
     return [self openUrl:url];
@@ -256,6 +175,118 @@ static void (^kAuthBlock)(NSString *);
         }
     }];
     [sessionDataTask resume];
+}
+
++ (BOOL)handleURL:(NSURL *)url {
+    NSString *prefix = [NSString stringWithFormat:@"%@://virtual?params=", kAppScheme];
+    if (![url.absoluteString.lowercaseString containsString:@"://virtual?params="]) {
+        return NO;
+    }
+    NSString *params = [url.absoluteString substringFromIndex:prefix.length].stringByRemovingPercentEncoding;
+    return [self handleURLParams:params];
+}
+
+
+#pragma mark - private
+
++ (NSError *)openUrl:(NSString *)urlString {
+    NSURL *url = [NSURL URLWithString:urlString];
+    if ([[UIApplication sharedApplication] canOpenURL:url]) {
+        [[UIApplication sharedApplication] openURL:url];
+        return nil;
+    }
+    return [NSError errorWithDomain:@"Need NasNano"
+                               code:-1
+                           userInfo:@{
+                                      @"msg" : @"没安装Nebulas智能数字钱包，请下载安装"
+                                      }];
+}
+
+///handel openURL data
++ (BOOL)handleURLParams:(NSString *)params {
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:[params dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+    if ([dict isKindOfClass:NSDictionary.class]) {
+        NSString *action = [NSString stringWithFormat:@"%@", dict[@"action"]];
+        NSInteger code = [dict[@"code"] integerValue];
+        NSString *data = nil;
+        if (dict[@"data"]) {
+            data = [NSString stringWithFormat:@"%@", dict[@"data"]];
+        }
+        
+        if ([action isEqualToString:@"auth"]) {
+            if (code == 0) {
+                kAuthBlock ? kAuthBlock(data) : nil;
+            } else {
+                kAuthBlock ? kAuthBlock(nil) : nil;
+            }
+            kAuthBlock = nil;
+            return YES;
+        } else if ([action isEqualToString:@"pay"]) {
+            if (code == 0) {
+                kPayBlock ? kPayBlock(YES, data) : nil;
+            } else {
+                kPayBlock ? kPayBlock(NO, nil) : nil;
+            }
+            kPayBlock = nil;
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
+///generate query string
++ (NSString *)queryValueWithSerialNumber:(NSString *)sn andInfo:(NSDictionary *)info {
+    NSMutableDictionary *dict = [NSMutableDictionary
+                                 dictionaryWithDictionary:@{
+                                                            @"category" : @"jump",
+                                                            @"des" : @"confirmTransfer"
+                                                            }];
+    NSMutableDictionary *pageParams = [NSMutableDictionary
+                                       dictionaryWithDictionary:@{ @"serialNumber" : sn ?: @"" }];
+    if (info) {
+        [pageParams addEntriesFromDictionary:info];
+    }
+    //app info
+    if (kAppName && kAppIcon && kAppScheme) {
+        //base64 encode image
+        NSData *data = UIImageJPEGRepresentation(kAppIcon, 0.9f);
+        NSString *encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        
+        dict[@"dapp"] = @{@"name":kAppName,
+                          @"icon":encodedImageStr,
+                          @"scheme":kAppScheme
+                          };
+    }
+    dict[@"pageParams"] = pageParams;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
+    return [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]
+            stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
+}
+
++ (NSString *)authQureyValueWithInfo:(NSDictionary *)info {
+    NSMutableDictionary *dict = [NSMutableDictionary
+                                 dictionaryWithDictionary:@{
+                                                            @"category" : @"jump",
+                                                            @"des" : @"auth"
+                                                            }];
+    if (info) {
+        dict[@"pageParams"] = info;
+    }
+    //app info
+    if (kAppName && kAppIcon && kAppScheme) {
+        //base64 encode image
+        NSData *data = UIImageJPEGRepresentation(kAppIcon, 0.9f);
+        NSString *encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        
+        dict[@"dapp"] = @{@"name":kAppName,
+                          @"icon":encodedImageStr,
+                          @"scheme":kAppScheme
+                          };
+    }
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
+    return [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]
+            stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
 }
 
 @end

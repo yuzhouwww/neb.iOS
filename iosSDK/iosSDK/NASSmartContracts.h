@@ -11,14 +11,9 @@
 @interface NASSmartContracts : NSObject
 
 /**
- * 初始化 SDK 设置.
+ * Config SDK.
  **/
 + (void)setAppName:(NSString *)name icon:(UIImage *)icon scheme:(NSString *)scheme;
-
-/**
- * Handle result.
- **/
-+ (BOOL)handleURL:(NSURL *)url;
 
 /**
  * Go to debug mode. Default is product mode.
@@ -26,9 +21,9 @@
 + (void)debug:(BOOL)debug;
 
 /**
- * Way to generate serialNumber.
+ * Handle openURL.
  **/
-+ (NSString *)randomCodeWithLength:(NSInteger)length;
++ (BOOL)handleURL:(NSURL *)url;
 
 /**
  * Check if NasNano is installed.
@@ -40,6 +35,10 @@
  **/
 + (void)goToNasNanoAppStore;
 
+/**
+ * Generate a 32-length SerialNumber.
+ **/
++ (NSString *)randomSerialNumber;
 
 /**
  Authenticate by a Wallet in your NASNano App.
@@ -57,7 +56,8 @@
           toAddress:(NSString *)address
    withSerialNumber:(NSString *)sn
        forGoodsName:(NSString *)name
-            andDesc:(NSString *)desc;
+            andDesc:(NSString *)desc
+           complete:(void (^)(BOOL success, NSString *txHash))complete;
 
 /**
  * Call a smart contract function. Return nil if success.
@@ -68,7 +68,8 @@
                   toAddress:(NSString *)address
            withSerialNumber:(NSString *)sn
                forGoodsName:(NSString *)name
-                    andDesc:(NSString *)desc;
+                    andDesc:(NSString *)desc
+                   complete:(void (^)(BOOL success, NSString *txHash))complete;
 
 /**
  * Check status for an action.
