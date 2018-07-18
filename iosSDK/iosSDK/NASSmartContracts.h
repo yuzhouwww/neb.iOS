@@ -61,6 +61,17 @@
            complete:(void (^)(BOOL success, NSString *txHash))complete;
 
 /**
+ * Pay for goods. Return nil if success.
+ **/
++ (NSError *)payNrc20:(NSNumber *)nrc
+            toAddress:(NSString *)address
+         serialNumber:(NSString *)sn
+            goodsName:(NSString *)name
+          description:(NSString *)desc
+          callbackURL:(NSString *)url
+             complete:(void (^)(BOOL success, NSString *txHash))complete;
+
+/**
  * Call a smart contract function. Return nil if success.
  **/
 + (NSError *)callMethod:(NSString *)method
@@ -72,6 +83,16 @@
             description:(NSString *)desc
             callbackURL:(NSString *)url
                complete:(void (^)(BOOL success, NSString *txHash))complete;
+
+/**
+ * Deploy a smart contract. Return nil if success.
+ **/
++ (NSError *)deployContractWithSource:(NSString *)source
+                           sourceType:(NSString *)sourceType
+                               binary:(NSString *)binary
+                         serialNumber:(NSString *)sn
+                          callbackURL:(NSString *)url
+                             complete:(void (^)(BOOL success, NSString *txHash))complete;
 
 /**
  * Check status for an action.

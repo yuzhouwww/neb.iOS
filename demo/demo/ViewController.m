@@ -46,7 +46,7 @@
                                      toAddress:@"n1RZfatTFvkXPUa8M9bGJyV8AZmjLQZQzrt"
                                   serialNumber:self.sn
                                      goodsName:@"test1"
-                                   description:@"desc"
+                                   description:@"desc1"
                                    callbackURL:nil
                                       complete:^(BOOL success, NSString *txHash) {
                                           if (success) {
@@ -63,6 +63,29 @@
     }
 }
 
+- (IBAction)payNrc20:(id)sender {
+    self.sn = [NASSmartContracts randomSerialNumber];
+    NSError *error = [NASSmartContracts payNrc20:@(1)
+                                       toAddress:@"n1awhGQjpjWya785r5ht7FYTNoVAmQAqKpb"
+                                    serialNumber:self.sn
+                                       goodsName:@"test2"
+                                     description:@"des2"
+                                     callbackURL:nil
+                                        complete:^(BOOL success, NSString *txHash) {
+                                            if (success) {
+                                                self.textView.text = [NSString stringWithFormat:@"Pay succeed! txHash:\n%@", txHash];
+                                            } else {
+                                                self.textView.text = @"Failed to pay";
+                                            }
+                                      }];
+    if (error) {
+        self.textView.text = error.userInfo[@"msg"];
+        [NASSmartContracts goToNasNanoAppStore];
+    } else {
+        self.textView.text = @"Paying...";
+    }
+}
+
 - (IBAction)call:(id)sender {
     self.sn = [NASSmartContracts randomSerialNumber];
     NSError *error = [NASSmartContracts callMethod:@"save"
@@ -70,8 +93,8 @@
                                             payNas:@(0)
                                          toAddress:@"n1zVUmH3BBebksT4LD5gMiWgNU9q3AMj3se"
                                       serialNumber:self.sn
-                                         goodsName:@"test2"
-                                       description:@"desc2"
+                                         goodsName:@"test3"
+                                       description:@"desc3"
                                        callbackURL:nil
                                           complete:^(BOOL success, NSString *txHash) {
                                                   if (success) {
@@ -85,6 +108,27 @@
         [NASSmartContracts goToNasNanoAppStore];
     } else {
         self.textView.text = @"Calling...";
+    }
+}
+
+- (IBAction)deploy:(id)sender {
+    self.sn = [NASSmartContracts randomSerialNumber];
+    NSError *error = [NASSmartContracts deployContractWithSource:nil
+                                                      sourceType:nil
+                                                          binary:nil
+                                                    serialNumber:self.sn
+                                                     callbackURL:nil complete:^(BOOL success, NSString *txHash) {
+        if (success) {
+            self.textView.text = [NSString stringWithFormat:@"Deploy succeed! txHash:\n%@", txHash];
+        } else {
+            self.textView.text = @"Failed to deploy";
+        }
+    }];
+    if (error) {
+        self.textView.text = error.userInfo[@"msg"];
+        [NASSmartContracts goToNasNanoAppStore];
+    } else {
+        self.textView.text = @"Deploying...";
     }
 }
 

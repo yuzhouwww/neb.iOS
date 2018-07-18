@@ -117,6 +117,37 @@ static void (^kPayBlock)(BOOL, NSString *);
     return [self openUrl:urlString];
 }
 
++ (NSError *)payNrc20:(NSNumber *)nrc
+            toAddress:(NSString *)address
+         serialNumber:(NSString *)sn
+            goodsName:(NSString *)name
+          description:(NSString *)desc
+          callbackURL:(NSString *)url
+             complete:(void (^)(BOOL success, NSString *txHash))complete {
+    NSDictionary *info = @{
+                           @"goods" : @{
+                                   @"name" : name ?: @"",
+                                   @"desc" : desc ?: @""
+                                   },
+                           @"pay" : @{
+                                   @"value" : [NSString stringWithFormat:@"%lld", [nrc longLongValue]],
+                                   @"to" :  @"n22PdtQepev7rcQgy3zqfdAkNPN2pSpywZ8",
+                                   @"payload" : @{
+                                           @"type" : @"call",
+                                           @"function" : @"transfer",
+                                           @"args" : @[address ?: @""]
+                                           },
+                                   @"currency" : @"NRC"
+                                   },
+                           @"callback" : url ?: kNASCallback
+                           };
+    
+    kPayBlock = complete;
+    NSString *urlString = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
+                           [self queryValueWithSerialNumber:sn andInfo:info]];
+    return [self openUrl:urlString];
+}
+
 + (NSError *)callMethod:(NSString *)method
                withArgs:(NSArray *)args
                  payNas:(NSNumber *)nas
@@ -149,6 +180,39 @@ static void (^kPayBlock)(BOOL, NSString *);
     kPayBlock = complete;
     NSString *urlString = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
                      [self queryValueWithSerialNumber:sn andInfo:info]];
+    return [self openUrl:urlString];
+}
+
++ (NSError *)deployContractWithSource:(NSString *)source
+                           sourceType:(NSString *)sourceType
+                               binary:(NSString *)binary
+                         serialNumber:(NSString *)sn
+                          callbackURL:(NSString *)url
+                             complete:(void (^)(BOOL success, NSString *txHash))complete {
+    NSDictionary *info = @{
+                           @"goods" : @{
+                                   @"name" : @"",
+                                   @"desc" : @""
+                                   },
+                           @"pay" : @{
+                                   @"value" : @"0",
+                                   @"to" : @"",
+                                   @"payload" : @{
+                                           @"type" : @"deploy",
+                                           @"function" : @"transfer",
+                                           @"args" : @"",
+                                           @"source" : source ?: @"",
+                                           @"sourceType" : sourceType ?: @"",
+                                           @"binary" : binary ?: @"",
+                                           },
+                                   @"currency" : @"NAS"
+                                   },
+                           @"callback" : url ?: kNASCallback
+                           };
+    
+    kPayBlock = complete;
+    NSString *urlString = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
+                           [self queryValueWithSerialNumber:sn andInfo:info]];
     return [self openUrl:urlString];
 }
 

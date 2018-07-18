@@ -25,7 +25,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="678"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="thN-so-ZcK">
-                                        <rect key="frame" x="171.66666666666666" y="264" width="32" height="30"/>
+                                        <rect key="frame" x="171.66666666666666" y="274" width="32" height="30"/>
                                         <state key="normal" title="Auth"/>
                                         <connections>
                                             <action selector="auth:" destination="BYZ-38-t0r" eventType="touchUpInside" id="GyX-Ui-mza"/>
@@ -38,34 +38,48 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yQ5-Ko-MSP">
-                                        <rect key="frame" x="172.66666666666666" y="314" width="30" height="30"/>
-                                        <state key="normal" title="Pay"/>
+                                        <rect key="frame" x="158" y="324" width="59" height="30"/>
+                                        <state key="normal" title="Pay NAS"/>
                                         <connections>
                                             <action selector="pay:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wfR-wO-Bvy"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dc8-Gw-2L9">
+                                        <rect key="frame" x="151.66666666666666" y="374" width="72" height="30"/>
+                                        <state key="normal" title="Pay Nrc20"/>
+                                        <connections>
+                                            <action selector="payNrc20:" destination="BYZ-38-t0r" eventType="touchUpInside" id="df6-O2-jeZ"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GKb-up-OBJ">
-                                        <rect key="frame" x="172.66666666666666" y="364" width="30" height="30"/>
+                                        <rect key="frame" x="172.66666666666666" y="424" width="30" height="30"/>
                                         <state key="normal" title="Call"/>
                                         <connections>
                                             <action selector="call:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rYa-XQ-B3h"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cQZ-Ep-uUs">
+                                        <rect key="frame" x="163.66666666666666" y="474" width="48" height="30"/>
+                                        <state key="normal" title="Deploy"/>
+                                        <connections>
+                                            <action selector="deploy:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LdZ-vM-0mU"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W6b-kK-rnx">
-                                        <rect key="frame" x="141.66666666666666" y="414" width="92" height="30"/>
+                                        <rect key="frame" x="141.66666666666666" y="524" width="92" height="30"/>
                                         <state key="normal" title="Check Status"/>
                                         <connections>
                                             <action selector="check:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kTu-5D-ORG"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mDH-2T-B7L">
-                                        <rect key="frame" x="135.66666666666666" y="464" width="104" height="30"/>
+                                        <rect key="frame" x="135.66666666666666" y="574" width="104" height="30"/>
                                         <state key="normal" title="Go to appStore"/>
                                         <connections>
                                             <action selector="goAppStore:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Joi-Te-0jf"/>
                                         </connections>
                                     </button>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon.jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="aQv-dY-KPT">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="aQv-dY-KPT">
                                         <rect key="frame" x="145" y="72" width="85" height="85"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="85" id="84v-lm-XsL"/>
@@ -84,16 +98,20 @@
                                     <constraint firstItem="mDH-2T-B7L" firstAttribute="top" secondItem="W6b-kK-rnx" secondAttribute="bottom" constant="20" id="0ht-Co-St1"/>
                                     <constraint firstItem="yQ5-Ko-MSP" firstAttribute="centerX" secondItem="heJ-1Y-yJB" secondAttribute="centerX" id="7A1-Cp-EIW"/>
                                     <constraint firstItem="aQv-dY-KPT" firstAttribute="centerX" secondItem="heJ-1Y-yJB" secondAttribute="centerX" id="7p6-kG-fR0"/>
-                                    <constraint firstItem="GKb-up-OBJ" firstAttribute="centerY" secondItem="heJ-1Y-yJB" secondAttribute="centerY" priority="750" constant="40" id="Egq-L1-qSZ"/>
+                                    <constraint firstItem="GKb-up-OBJ" firstAttribute="centerY" secondItem="heJ-1Y-yJB" secondAttribute="centerY" priority="750" constant="100" id="Egq-L1-qSZ"/>
                                     <constraint firstItem="thN-so-ZcK" firstAttribute="centerX" secondItem="heJ-1Y-yJB" secondAttribute="centerX" id="Jj5-da-wSW"/>
+                                    <constraint firstItem="cQZ-Ep-uUs" firstAttribute="centerX" secondItem="heJ-1Y-yJB" secondAttribute="centerX" id="LGw-4t-gfz"/>
                                     <constraint firstItem="yQ5-Ko-MSP" firstAttribute="top" secondItem="thN-so-ZcK" secondAttribute="bottom" constant="20" id="O88-s1-9S2"/>
+                                    <constraint firstItem="dc8-Gw-2L9" firstAttribute="centerX" secondItem="heJ-1Y-yJB" secondAttribute="centerX" id="PjK-kV-gF5"/>
                                     <constraint firstItem="aQv-dY-KPT" firstAttribute="top" secondItem="heJ-1Y-yJB" secondAttribute="topMargin" constant="20" id="SZj-GC-jcm"/>
                                     <constraint firstItem="GKb-up-OBJ" firstAttribute="centerX" secondItem="heJ-1Y-yJB" secondAttribute="centerX" id="TFf-kj-V1K"/>
                                     <constraint firstItem="aEk-tp-mKB" firstAttribute="top" secondItem="aQv-dY-KPT" secondAttribute="bottom" constant="20" id="Taf-pg-RCw"/>
-                                    <constraint firstItem="GKb-up-OBJ" firstAttribute="top" secondItem="yQ5-Ko-MSP" secondAttribute="bottom" constant="20" id="f0B-Mz-Di2"/>
+                                    <constraint firstItem="GKb-up-OBJ" firstAttribute="top" secondItem="dc8-Gw-2L9" secondAttribute="bottom" constant="20" id="VPW-o6-76f"/>
+                                    <constraint firstItem="W6b-kK-rnx" firstAttribute="top" secondItem="cQZ-Ep-uUs" secondAttribute="bottom" constant="20" id="ddI-RY-6LT"/>
+                                    <constraint firstItem="dc8-Gw-2L9" firstAttribute="top" secondItem="yQ5-Ko-MSP" secondAttribute="bottom" constant="20" id="jWa-o3-Emz"/>
                                     <constraint firstItem="aEk-tp-mKB" firstAttribute="centerX" secondItem="heJ-1Y-yJB" secondAttribute="centerX" id="mYn-5p-6RP"/>
-                                    <constraint firstItem="W6b-kK-rnx" firstAttribute="top" secondItem="GKb-up-OBJ" secondAttribute="bottom" constant="20" id="pqf-JA-ZhJ"/>
                                     <constraint firstItem="W6b-kK-rnx" firstAttribute="centerX" secondItem="heJ-1Y-yJB" secondAttribute="centerX" id="tfH-Of-AHf"/>
+                                    <constraint firstItem="cQZ-Ep-uUs" firstAttribute="top" secondItem="GKb-up-OBJ" secondAttribute="bottom" constant="20" id="uuy-oZ-puS"/>
                                     <constraint firstItem="mDH-2T-B7L" firstAttribute="centerX" secondItem="heJ-1Y-yJB" secondAttribute="centerX" id="xAc-IB-jNd"/>
                                 </constraints>
                             </view>
@@ -128,6 +146,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="icon.jpeg" width="120" height="120"/>
+        <image name="icon" width="120" height="120"/>
     </resources>
 </document>
