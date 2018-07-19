@@ -124,18 +124,22 @@ static void (^kPayBlock)(BOOL, NSString *);
           description:(NSString *)desc
           callbackURL:(NSString *)url
              complete:(void (^)(BOOL success, NSString *txHash))complete {
+    NSString *value = [NSString stringWithFormat:@"%lld", [nrc longLongValue]];
+    NSArray *args = @[address ?: @"", value];
+    NSData *argsData = [NSJSONSerialization dataWithJSONObject:args options:0 error:nil];
+    
     NSDictionary *info = @{
                            @"goods" : @{
                                    @"name" : name ?: @"",
                                    @"desc" : desc ?: @""
                                    },
                            @"pay" : @{
-                                   @"value" : [NSString stringWithFormat:@"%lld", [nrc longLongValue]],
+                                   @"value" : @"",
                                    @"to" :  @"n22PdtQepev7rcQgy3zqfdAkNPN2pSpywZ8",
                                    @"payload" : @{
                                            @"type" : @"call",
                                            @"function" : @"transfer",
-                                           @"args" : @[address ?: @""]
+                                           @"args" : [[NSString alloc] initWithData:argsData encoding:NSUTF8StringEncoding]
                                            },
                                    @"currency" : @"NRC"
                                    },
