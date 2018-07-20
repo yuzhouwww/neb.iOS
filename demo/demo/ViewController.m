@@ -10,10 +10,12 @@
 
 #define ViewTagOffset 100
 
-@interface ViewController () <UITextFieldDelegate, UIScrollViewDelegate>
+@interface ViewController () <UITextFieldDelegate, UIScrollViewDelegate, UIPopoverPresentationControllerDelegate>
 
 @property (nonatomic, strong) NSDictionary<NSString *, id> *config;
 @property (nonatomic, strong) NSString *sn;
+@property (nonatomic, strong) NSString *gasLimit;
+@property (nonatomic, strong) NSString *gasPrice;
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 @property (weak, nonatomic) IBOutlet UIScrollView *inputScrollView;
@@ -29,7 +31,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    
     self.config =
     @{
         @"Auth":
@@ -128,7 +130,8 @@
              ]
         }
     };
-    
+    self.gasLimit = @"20000";
+    self.gasPrice = @"1000000";
     NSArray *titles = @[@"NAS", @"NRC20", @"CALL", @"DEPLOY", @"Auth"];
     
     [self.segmentedControl removeAllSegments];
@@ -183,8 +186,9 @@
         currentY += field.bounds.size.height + 10;
     }];
     
+    currentY += 20;
+    
     if (buttons.count) {
-        currentY += 20;
         CGFloat buttonWidth = (scrollViewWidth - (buttons.count - 1) * buttonSpace) / buttons.count;
         [buttons enumerateObjectsUsingBlock:^(NSString * _Nonnull title, NSUInteger idx, BOOL * _Nonnull stop) {
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -198,17 +202,18 @@
             [self.inputScrollView addSubview:button];
         }];
         currentY += 44;
+        currentY += 20;
     }
-    
-    currentY += 20;
     
     self.inputScrollView.contentSize = CGSizeMake(scrollViewWidth, currentY);
     
     if (currentY > self.inputScrollView.bounds.size.height) {
-        [UIView animateWithDuration:0.3 animations:^{
-            self.inputScrollViewHeightConstraint.constant = currentY;
-            [self.view layoutIfNeeded];
-        }];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:0.3 animations:^{
+                self.inputScrollViewHeightConstraint.constant = currentY;
+                [self.view layoutIfNeeded];
+            }];
+        });
     }
 }
 
@@ -220,31 +225,31 @@
         if ([button.titleLabel.text isEqualToString:@"Check"]) {
             [self check];
         } else {
-            [self payNasTo:[self inputAtIndex:0] value:[self inputAtIndex:1]];
+            [self payNasTo:[self inputAtIndex:0 view:self.inputScrollView] value:[self inputAtIndex:1 view:self.inputScrollView]];
         }
     } else if ([segmentTitle isEqualToString:@"NRC20"]) {
         if ([button.titleLabel.text isEqualToString:@"Check"]) {
             [self check];
         } else {
-            [self payNrc20To:[self inputAtIndex:0] value:[self inputAtIndex:1]];
+            [self payNrc20To:[self inputAtIndex:0 view:self.inputScrollView] value:[self inputAtIndex:1 view:self.inputScrollView]];
         }
     } else if ([segmentTitle isEqualToString:@"CALL"]) {
         if ([button.titleLabel.text isEqualToString:@"Check"]) {
             [self check];
         } else {
-            [self callMethod:[self inputAtIndex:2] args:[self inputAtIndex:3] to:[self inputAtIndex:0] value:[self inputAtIndex:1]];
+            [self callMethod:[self inputAtIndex:2 view:self.inputScrollView] args:[self inputAtIndex:3 view:self.inputScrollView] to:[self inputAtIndex:0 view:self.inputScrollView] value:[self inputAtIndex:1 view:self.inputScrollView]];
         }
     } else if ([segmentTitle isEqualToString:@"DEPLOY"]) {
         if ([button.titleLabel.text isEqualToString:@"Check"]) {
             [self check];
         } else {
-            [self deploySource:[self inputAtIndex:0] sourceType:[self inputAtIndex:1]];
+            [self deploySource:[self inputAtIndex:0 view:self.inputScrollView] sourceType:[self inputAtIndex:1 view:self.inputScrollView]];
         }
     }
 }
 
-- (NSString *)inputAtIndex:(NSInteger)index {
-    UITextField *field = [self.inputScrollView viewWithTag:ViewTagOffset + index];
+- (NSString *)inputAtIndex:(NSInteger)index view:(UIView *)view {
+    UITextField *field = [view viewWithTag:ViewTagOffset + index];
     if ([field isKindOfClass:UITextField.class]) {
         NSLog(@"index: %ld", (long)index);
         NSLog(@"input: %@", field.text);
@@ -269,6 +274,8 @@
     self.sn = [NASSmartContracts randomSerialNumber];
     NSError *error = [NASSmartContracts payNas:[NSNumber numberWithLongLong:value.longLongValue]
                                      toAddress:to
+                                      gasLimit:self.gasLimit
+                                      gasPrice:self.gasPrice
                                   serialNumber:self.sn
                                      goodsName:@"test1"
                                    description:@"desc1"
@@ -292,6 +299,8 @@
     self.sn = [NASSmartContracts randomSerialNumber];
     NSError *error = [NASSmartContracts payNrc20:[NSNumber numberWithLongLong:value.longLongValue]
                                        toAddress:to
+                                        gasLimit:self.gasLimit
+                                        gasPrice:self.gasPrice
                                     serialNumber:self.sn
                                        goodsName:@"test2"
                                      description:@"des2"
@@ -321,6 +330,8 @@
                                           withArgs:argsArray
                                             payNas:[NSNumber numberWithLongLong:value.longLongValue]
                                          toAddress:to
+                                          gasLimit:self.gasLimit
+                                          gasPrice:self.gasPrice
                                       serialNumber:self.sn
                                          goodsName:@"test3"
                                        description:@"desc3"
@@ -345,6 +356,8 @@
     NSError *error = [NASSmartContracts deployContractWithSource:source
                                                       sourceType:sourceType
                                                           binary:nil
+                                                        gasLimit:self.gasLimit
+                                                        gasPrice:self.gasPrice
                                                     serialNumber:self.sn
                                                      callbackURL:nil complete:^(BOOL success, NSString *txHash) {
         if (success) {
@@ -381,6 +394,75 @@
     [NASSmartContracts goToNasNanoAppStore];
 }
 
+- (IBAction)showGasOpition {
+    UIViewController * testVC = [UIViewController new];
+    // 设置大小
+//    testVC.preferredContentSize = CGSizeMake(self.view.bounds.size.width - 24, 200);
+    [self updateGasView:testVC];
+    // 设置 Sytle
+    testVC.modalPresentationStyle = UIModalPresentationPopover;
+    // 需要通过 sourceView 来判断位置的
+    testVC.popoverPresentationController.barButtonItem = self.navigationItem.leftBarButtonItem;
+    // 指定箭头所指区域的矩形框范围（位置和尺寸）,以sourceView的左上角为坐标原点
+    // 这个可以 通过 Point 或  Size 调试位置
+//    testVC.popoverPresentationController.sourceRect = self.button.bounds;
+    // 箭头方向
+    testVC.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+    // 设置代理
+    testVC.popoverPresentationController.delegate = self;
+    testVC.popoverPresentationController.backgroundColor = self.view.tintColor;
+    [self presentViewController:testVC animated:YES completion:nil];
+}
+
+- (void)updateGasView:(UIViewController *)vc {
+    __block CGFloat currentY = 8;
+    CGFloat currentX = 8;
+    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat viewWidth = screenWidth - 40;
+    
+    NSArray *inputs = @[
+                        @{
+                            @"name" : @"gasLimit",
+                            @"text" : self.gasLimit
+                            },
+                        @{
+                            @"name" : @"gasPrice",
+                            @"text" : self.gasPrice
+                            }
+                        ];
+    [inputs enumerateObjectsUsingBlock:^(NSDictionary *  _Nonnull input, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *name = input[@"name"];
+        NSString *text = input[@"text"];
+        NSString *placeholder = input[@"placeholder"];
+        
+        UILabel *label = [UILabel new];
+        label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+        label.textColor = [UIColor whiteColor];
+        label.text = name;
+        [label sizeToFit];
+        label.frame = CGRectMake(currentX, currentY, label.bounds.size.width, label.bounds.size.height);
+        [vc.view addSubview:label];
+        currentY += label.bounds.size.height + 8;
+        
+        UITextField *field = [UITextField new];
+        field.delegate = self;
+        field.tag = ViewTagOffset + idx;
+        field.borderStyle = UITextBorderStyleRoundedRect;
+        field.backgroundColor = [UIColor blackColor];
+        field.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
+        field.textColor = [UIColor whiteColor];
+        field.text = text ?: nil;
+        field.placeholder = placeholder ?: name;
+        field.keyboardType = [name isEqualToString:@"value"] ? UIKeyboardTypeDecimalPad : UIKeyboardTypeDefault;
+        field.returnKeyType = UIReturnKeyDone;
+        field.frame = CGRectMake(currentX, currentY, viewWidth , 40);
+        [vc.view addSubview:field];
+        currentY += field.bounds.size.height + 8;
+    }];
+    
+    vc.preferredContentSize = CGSizeMake(screenWidth - 24, currentY);
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     return YES;
@@ -415,6 +497,17 @@
         default:
             break;
     }
+}
+
+-(UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller{
+    return UIModalPresentationNone; //不适配
+}
+
+- (BOOL)popoverPresentationControllerShouldDismissPopover:(UIPopoverPresentationController *)popoverPresentationController{
+    UIView *view = popoverPresentationController.presentedViewController.view;
+    self.gasLimit = [self inputAtIndex:0 view:view];
+    self.gasPrice = [self inputAtIndex:1 view:view];
+    return YES;   //点击蒙版popover消失， 默认YES
 }
 
 @end

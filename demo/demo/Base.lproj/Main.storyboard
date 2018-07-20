@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--SDK demo-->
+        <!--NebPay demo-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
@@ -48,7 +48,7 @@
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="100" id="K6v-KO-4OM"/>
                                     <constraint firstAttribute="height" priority="249" constant="140" id="dSe-eb-BhX"/>
                                 </constraints>
-                                <color key="textColor" red="1" green="0.210826517642827" blue="0.97110370338616792" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="textColor" red="0.3068776147780693" green="1" blue="0.29732614105940547" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -57,7 +57,7 @@
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HeG-lS-eZh">
                                         <rect key="frame" x="0.0" y="10" width="40" height="10"/>
-                                        <color key="backgroundColor" red="0.46440751903553301" green="0.097909420005406325" blue="0.45098786161578835" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" red="0.078668578619271387" green="0.36587880710659904" blue="0.054689403490145082" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="40" id="5bp-l7-XWH"/>
@@ -99,9 +99,19 @@
                             <constraint firstItem="u8i-cv-rua" firstAttribute="top" secondItem="u7a-Bj-CoE" secondAttribute="bottom" constant="8" id="xOt-fX-QSm"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="SDK demo" id="9Uw-cv-KTE">
+                    <navigationItem key="navigationItem" title="NebPay demo" id="9Uw-cv-KTE">
+                        <barButtonItem key="leftBarButtonItem" style="plain" id="CRl-Eb-ItM">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="nBU-Ah-2Oc">
+                                <rect key="frame" x="20" y="4" width="36" height="36"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="gas"/>
+                                <connections>
+                                    <action selector="showGasOpition" destination="BYZ-38-t0r" eventType="touchUpInside" id="xpB-lK-kfn"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" style="plain" id="NE0-J5-IZg">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="tva-dD-8iO">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="tva-dD-8iO">
                                 <rect key="frame" x="340" y="0.0" width="54" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="app_store"/>
@@ -146,5 +156,6 @@
     </scenes>
     <resources>
         <image name="app_store" width="54" height="54"/>
+        <image name="gas" width="36" height="36"/>
     </resources>
 </document>

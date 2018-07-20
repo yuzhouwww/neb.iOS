@@ -89,6 +89,8 @@ static void (^kPayBlock)(BOOL, NSString *);
 
 + (NSError *)payNas:(NSNumber *)nas
           toAddress:(NSString *)address
+           gasLimit:(NSString *)gasLimit
+           gasPrice:(NSString *)gasPrice
        serialNumber:(NSString *)sn
           goodsName:(NSString *)name
         description:(NSString *)desc
@@ -106,7 +108,9 @@ static void (^kPayBlock)(BOOL, NSString *);
                                    @"payload" : @{
                                            @"type" : @"binary"
                                            },
-                                   @"currency" : @"NAS"
+                                   @"currency" : @"NAS",
+                                   @"gasLimit" : gasLimit ?: @"",
+                                   @"gasPrice" : gasPrice ?: @""
                                    },
                            @"callback" : url ?: kNASCallback
                            };
@@ -119,6 +123,8 @@ static void (^kPayBlock)(BOOL, NSString *);
 
 + (NSError *)payNrc20:(NSNumber *)nrc
             toAddress:(NSString *)address
+             gasLimit:(NSString *)gasLimit
+             gasPrice:(NSString *)gasPrice
          serialNumber:(NSString *)sn
             goodsName:(NSString *)name
           description:(NSString *)desc
@@ -141,7 +147,9 @@ static void (^kPayBlock)(BOOL, NSString *);
                                            @"function" : @"transfer",
                                            @"args" : [[NSString alloc] initWithData:argsData encoding:NSUTF8StringEncoding]
                                            },
-                                   @"currency" : @"NRC"
+                                   @"currency" : @"NRC",
+                                   @"gasLimit" : gasLimit ?: @"",
+                                   @"gasPrice" : gasPrice ?: @""
                                    },
                            @"callback" : url ?: kNASCallback
                            };
@@ -156,6 +164,8 @@ static void (^kPayBlock)(BOOL, NSString *);
                withArgs:(NSArray *)args
                  payNas:(NSNumber *)nas
               toAddress:(NSString *)address
+               gasLimit:(NSString *)gasLimit
+               gasPrice:(NSString *)gasPrice
            serialNumber:(NSString *)sn
               goodsName:(NSString *)name
             description:(NSString *)desc
@@ -176,7 +186,9 @@ static void (^kPayBlock)(BOOL, NSString *);
                                            @"function" : method ?: @"",
                                            @"args" : [[NSString alloc] initWithData:argsData encoding:NSUTF8StringEncoding]
                                            },
-                                   @"currency" : @"NAS"
+                                   @"currency" : @"NAS",
+                                   @"gasLimit" : gasLimit ?: @"",
+                                   @"gasPrice" : gasPrice ?: @""
                                    },
                            @"callback" : url ?: kNASCallback
                            };
@@ -190,6 +202,8 @@ static void (^kPayBlock)(BOOL, NSString *);
 + (NSError *)deployContractWithSource:(NSString *)source
                            sourceType:(NSString *)sourceType
                                binary:(NSString *)binary
+                             gasLimit:(NSString *)gasLimit
+                             gasPrice:(NSString *)gasPrice
                          serialNumber:(NSString *)sn
                           callbackURL:(NSString *)url
                              complete:(void (^)(BOOL success, NSString *txHash))complete {
@@ -209,7 +223,9 @@ static void (^kPayBlock)(BOOL, NSString *);
                                            @"sourceType" : sourceType ?: @"",
                                            @"binary" : binary ?: @"",
                                            },
-                                   @"currency" : @"NAS"
+                                   @"currency" : @"NAS",
+                                   @"gasLimit" : gasLimit ?: @"",
+                                   @"gasPrice" : gasPrice ?: @""
                                    },
                            @"callback" : url ?: kNASCallback
                            };

@@ -54,6 +54,8 @@
  **/
 + (NSError *)payNas:(NSNumber *)nas
           toAddress:(NSString *)address
+           gasLimit:(NSString *)gasLimit
+           gasPrice:(NSString *)gasPrice
        serialNumber:(NSString *)sn
           goodsName:(NSString *)name
         description:(NSString *)desc
@@ -65,6 +67,8 @@
  **/
 + (NSError *)payNrc20:(NSNumber *)nrc
             toAddress:(NSString *)address
+             gasLimit:(NSString *)gasLimit
+             gasPrice:(NSString *)gasPrice
          serialNumber:(NSString *)sn
             goodsName:(NSString *)name
           description:(NSString *)desc
@@ -78,6 +82,8 @@
                withArgs:(NSArray *)args
                  payNas:(NSNumber *)nas
               toAddress:(NSString *)address
+               gasLimit:(NSString *)gasLimit
+               gasPrice:(NSString *)gasPrice
            serialNumber:(NSString *)sn
               goodsName:(NSString *)name
             description:(NSString *)desc
@@ -90,6 +96,8 @@
 + (NSError *)deployContractWithSource:(NSString *)source
                            sourceType:(NSString *)sourceType
                                binary:(NSString *)binary
+                             gasLimit:(NSString *)gasLimit
+                             gasPrice:(NSString *)gasPrice
                          serialNumber:(NSString *)sn
                           callbackURL:(NSString *)url
                              complete:(void (^)(BOOL success, NSString *txHash))complete;
