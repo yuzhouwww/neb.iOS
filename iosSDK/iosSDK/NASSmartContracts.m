@@ -25,8 +25,8 @@ static NSString *kAppName;
 static UIImage *kAppIcon;
 static NSString *kAppScheme;
 
-static void (^kAuthBlock)(NSString *);
-static void (^kPayBlock)(BOOL, NSString *);
+static void (^kAuthBlock)(BOOL success, NSString *walletAddress, NSString *message);
+static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
 
 @implementation NASSmartContracts
 
@@ -39,11 +39,11 @@ static void (^kPayBlock)(BOOL, NSString *);
     
     [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidBecomeActiveNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
         if (kAuthBlock) {
-            kAuthBlock(nil);
+            kAuthBlock(NO, nil, nil);
             kAuthBlock = nil;
         }
         if (kPayBlock) {
-            kPayBlock(NO, nil);
+            kPayBlock(NO, nil, nil);
             kPayBlock = nil;
         }
     }];
@@ -79,7 +79,7 @@ static void (^kPayBlock)(BOOL, NSString *);
 
 
 + (NSError *)authWithInfo:(NSDictionary *)info
-                 complete:(void (^)(NSString *address))complete {
+                 complete:(void (^)(BOOL success, NSString *walletAddress, NSString *message))complete {
     kAuthBlock = complete;
     
     NSString *url = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
@@ -95,7 +95,7 @@ static void (^kPayBlock)(BOOL, NSString *);
           goodsName:(NSString *)name
         description:(NSString *)desc
         callbackURL:(NSString *)url
-           complete:(void (^)(BOOL success, NSString *txHash))complete {
+           complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete {
     NSNumber *wei = @(1000000000000000000L * [nas doubleValue]);
     NSDictionary *info = @{
                            @"goods" : @{
@@ -129,7 +129,7 @@ static void (^kPayBlock)(BOOL, NSString *);
             goodsName:(NSString *)name
           description:(NSString *)desc
           callbackURL:(NSString *)url
-             complete:(void (^)(BOOL success, NSString *txHash))complete {
+             complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete {
     NSString *value = [NSString stringWithFormat:@"%lld", [nrc longLongValue]];
     NSArray *args = @[address ?: @"", value];
     NSData *argsData = [NSJSONSerialization dataWithJSONObject:args options:0 error:nil];
@@ -170,7 +170,7 @@ static void (^kPayBlock)(BOOL, NSString *);
               goodsName:(NSString *)name
             description:(NSString *)desc
             callbackURL:(NSString *)url
-               complete:(void (^)(BOOL success, NSString *txHash))complete {
+               complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete {
     NSNumber *wei = @(1000000000000000000L * [nas doubleValue]);
     NSData *argsData = [NSJSONSerialization dataWithJSONObject:args options:0 error:nil];
     NSDictionary *info = @{
@@ -206,7 +206,7 @@ static void (^kPayBlock)(BOOL, NSString *);
                              gasPrice:(NSString *)gasPrice
                          serialNumber:(NSString *)sn
                           callbackURL:(NSString *)url
-                             complete:(void (^)(BOOL success, NSString *txHash))complete {
+                             complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete {
     NSDictionary *info = @{
                            @"goods" : @{
                                    @"name" : @"",
@@ -284,7 +284,7 @@ static void (^kPayBlock)(BOOL, NSString *);
     return [NSError errorWithDomain:@"Need NasNano"
                                code:-1
                            userInfo:@{
-                                      @"msg" : @"没安装Nebulas智能数字钱包，请下载安装"
+                                      @"msg" : @"Please install NasNano app"
                                       }];
 }
 
@@ -298,20 +298,24 @@ static void (^kPayBlock)(BOOL, NSString *);
         if (dict[@"data"]) {
             data = [NSString stringWithFormat:@"%@", dict[@"data"]];
         }
+        NSString *message = nil;
+        if (dict[@"error"]) {
+            message = [NSString stringWithFormat:@"%@", dict[@"error"]];
+        }
         
         if ([action isEqualToString:@"auth"]) {
             if (code == 0) {
-                kAuthBlock ? kAuthBlock(data) : nil;
+                kAuthBlock ? kAuthBlock(YES, data, message) : nil;
             } else {
-                kAuthBlock ? kAuthBlock(nil) : nil;
+                kAuthBlock ? kAuthBlock(NO, nil, message) : nil;
             }
             kAuthBlock = nil;
             return YES;
         } else if ([action isEqualToString:@"pay"]) {
             if (code == 0) {
-                kPayBlock ? kPayBlock(YES, data) : nil;
+                kPayBlock ? kPayBlock(YES, data, message) : nil;
             } else {
-                kPayBlock ? kPayBlock(NO, nil) : nil;
+                kPayBlock ? kPayBlock(NO, nil, message) : nil;
             }
             kPayBlock = nil;
             return YES;

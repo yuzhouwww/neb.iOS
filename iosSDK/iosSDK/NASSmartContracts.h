@@ -47,7 +47,7 @@
  @return error occured when open NASNano App
  */
 + (NSError *)authWithInfo:(nullable NSDictionary *)info
-                 complete:(void (^)(NSString *walletAddress))complete;
+                 complete:(void (^)(BOOL success, NSString *walletAddress, NSString *message))complete;
 
 /**
  * Pay for goods. Return nil if success.
@@ -60,7 +60,7 @@
           goodsName:(NSString *)name
         description:(NSString *)desc
         callbackURL:(NSString *)url
-           complete:(void (^)(BOOL success, NSString *txHash))complete;
+           complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete;
 
 /**
  * Pay for goods. Return nil if success.
@@ -73,7 +73,7 @@
             goodsName:(NSString *)name
           description:(NSString *)desc
           callbackURL:(NSString *)url
-             complete:(void (^)(BOOL success, NSString *txHash))complete;
+             complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete;
 
 /**
  * Call a smart contract function. Return nil if success.
@@ -88,7 +88,7 @@
               goodsName:(NSString *)name
             description:(NSString *)desc
             callbackURL:(NSString *)url
-               complete:(void (^)(BOOL success, NSString *txHash))complete;
+               complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete;
 
 /**
  * Deploy a smart contract. Return nil if success.
@@ -100,7 +100,7 @@
                              gasPrice:(NSString *)gasPrice
                          serialNumber:(NSString *)sn
                           callbackURL:(NSString *)url
-                             complete:(void (^)(BOOL success, NSString *txHash))complete;
+                             complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete;
 
 /**
  * Check status for an action.

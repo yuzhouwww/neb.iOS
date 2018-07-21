@@ -259,19 +259,24 @@
 }
 
 - (void)auth {
-    self.textView.text = @"authorizing...";
     __weak typeof(self) wself = self;
-    [NASSmartContracts authWithInfo:nil complete:^(NSString *walletAddress) {
-        if (walletAddress.length) {
+    NSError *error = [NASSmartContracts authWithInfo:nil complete:^(BOOL success, NSString *walletAddress, NSString *message) {
+        if (success && walletAddress.length) {
             wself.textView.text = [NSString stringWithFormat:@"Auth succeed! Wallet address:\n%@", walletAddress];
         } else {
-            wself.textView.text = @"Failed to auth";
+            wself.textView.text = [NSString stringWithFormat:@"Failed to auth, error: %@", message ?: @"unknown error"];
         }
     }];
+    if (error) {
+        self.textView.text = error.userInfo[@"msg"];
+    } else {
+        self.textView.text = @"authorizing...";
+    }
 }
 
 - (void)payNasTo:(NSString *)to value:(NSString *)value {
     self.sn = [NASSmartContracts randomSerialNumber];
+    __weak typeof(self) wself = self;
     NSError *error = [NASSmartContracts payNas:[NSNumber numberWithLongLong:value.longLongValue]
                                      toAddress:to
                                       gasLimit:self.gasLimit
@@ -280,16 +285,15 @@
                                      goodsName:@"test1"
                                    description:@"desc1"
                                    callbackURL:nil
-                                      complete:^(BOOL success, NSString *txHash) {
+                                      complete:^(BOOL success, NSString *txHash, NSString *message) {
                                           if (success) {
-                                              self.textView.text = [NSString stringWithFormat:@"Pay succeed! txHash:\n%@", txHash];
+                                              wself.textView.text = [NSString stringWithFormat:@"Pay succeed! txHash:\n%@", txHash];
                                           } else {
-                                              self.textView.text = @"Failed to pay";
+                                              wself.textView.text = [NSString stringWithFormat:@"Failed to pay, error: %@", message ?: @"unknown error"];
                                           }
                                       }];
     if (error) {
         self.textView.text = error.userInfo[@"msg"];
-        [NASSmartContracts goToNasNanoAppStore];
     } else {
         self.textView.text = @"Paying...";
     }
@@ -297,6 +301,7 @@
 
 - (void)payNrc20To:(NSString *)to value:(NSString *)value {
     self.sn = [NASSmartContracts randomSerialNumber];
+    __weak typeof(self) wself = self;
     NSError *error = [NASSmartContracts payNrc20:[NSNumber numberWithLongLong:value.longLongValue]
                                        toAddress:to
                                         gasLimit:self.gasLimit
@@ -305,16 +310,15 @@
                                        goodsName:@"test2"
                                      description:@"des2"
                                      callbackURL:nil
-                                        complete:^(BOOL success, NSString *txHash) {
+                                        complete:^(BOOL success, NSString *txHash, NSString *message) {
                                             if (success) {
-                                                self.textView.text = [NSString stringWithFormat:@"Pay succeed! txHash:\n%@", txHash];
+                                                wself.textView.text = [NSString stringWithFormat:@"Pay succeed! txHash:\n%@", txHash];
                                             } else {
-                                                self.textView.text = @"Failed to pay";
+                                                wself.textView.text = [NSString stringWithFormat:@"Failed to pay NRC20, error: %@", message ?: @"unknown error"];
                                             }
                                       }];
     if (error) {
         self.textView.text = error.userInfo[@"msg"];
-        [NASSmartContracts goToNasNanoAppStore];
     } else {
         self.textView.text = @"Paying...";
     }
@@ -326,6 +330,7 @@
              value:(NSString *)value {
     self.sn = [NASSmartContracts randomSerialNumber];
     NSArray *argsArray = [args componentsSeparatedByString:@","];
+    __weak typeof(self) wself = self;
     NSError *error = [NASSmartContracts callMethod:method
                                           withArgs:argsArray
                                             payNas:[NSNumber numberWithLongLong:value.longLongValue]
@@ -336,16 +341,15 @@
                                          goodsName:@"test3"
                                        description:@"desc3"
                                        callbackURL:nil
-                                          complete:^(BOOL success, NSString *txHash) {
+                                          complete:^(BOOL success, NSString *txHash, NSString *message) {
                                                   if (success) {
-                                                      self.textView.text = [NSString stringWithFormat:@"Call succeed! txHash:\n%@", txHash];
+                                                      wself.textView.text = [NSString stringWithFormat:@"Call succeed! txHash:\n%@", txHash];
                                                   } else {
-                                                      self.textView.text = @"Failed to call";
+                                                      wself.textView.text = [NSString stringWithFormat:@"Failed to call, error: %@", message ?: @"unknown error"];
                                                   }
                                               }];
     if (error) {
         self.textView.text = error.userInfo[@"msg"];
-        [NASSmartContracts goToNasNanoAppStore];
     } else {
         self.textView.text = @"Calling...";
     }
@@ -353,22 +357,22 @@
 
 - (void)deploySource:(NSString *)source sourceType:(NSString *)sourceType {
     self.sn = [NASSmartContracts randomSerialNumber];
+    __weak typeof(self) wself = self;
     NSError *error = [NASSmartContracts deployContractWithSource:source
                                                       sourceType:sourceType
                                                           binary:nil
                                                         gasLimit:self.gasLimit
                                                         gasPrice:self.gasPrice
                                                     serialNumber:self.sn
-                                                     callbackURL:nil complete:^(BOOL success, NSString *txHash) {
+                                                     callbackURL:nil complete:^(BOOL success, NSString *txHash, NSString *message) {
         if (success) {
-            self.textView.text = [NSString stringWithFormat:@"Deploy succeed! txHash:\n%@", txHash];
+            wself.textView.text = [NSString stringWithFormat:@"Deploy succeed! txHash:\n%@", txHash];
         } else {
-            self.textView.text = @"Failed to deploy";
+            wself.textView.text = [NSString stringWithFormat:@"Failed to deploy, error: %@", message ?: @"unknown error"];
         }
     }];
     if (error) {
         self.textView.text = error.userInfo[@"msg"];
-        [NASSmartContracts goToNasNanoAppStore];
     } else {
         self.textView.text = @"Deploying...";
     }
@@ -376,16 +380,17 @@
 
 - (void)check {
     self.textView.text = @"checking...";
+    __weak typeof(self) wself = self;
     [NASSmartContracts checkStatusWithSerialNumber:self.sn
                              withCompletionHandler:^(NSDictionary *data) {
                                  NSData *json = [NSJSONSerialization dataWithJSONObject:data options:NSJSONWritingPrettyPrinted error:nil];
                                  NSString *string = [[NSString alloc] initWithData:json encoding:NSUTF8StringEncoding];
                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                     self.textView.text = string;
+                                     wself.textView.text = string;
                                  });
                              } errorHandler:^(NSInteger code, NSString *msg) {
                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                     self.textView.text = msg;
+                                     wself.textView.text = msg;
                                  });
                              }];
 }
