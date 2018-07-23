@@ -10,15 +10,20 @@
 // You need to add 'openapp.nasnano' to schema white list.
 @interface NASSmartContracts : NSObject
 
-/**
- * Config SDK.
- **/
-+ (void)setAppName:(NSString *)name icon:(UIImage *)icon scheme:(NSString *)scheme;
 
 /**
- * Go to debug mode. Default is product mode.
+ Config SDK.
+
+ @param name your app's name
+ @param icon your appls icon image
+ @param scheme URL scheme which is supported by your app
+ */
++ (void)setupWithAppName:(NSString *)name icon:(UIImage *)icon scheme:(NSString *)scheme;
+
+/**
+ * Set debug mode. Default is NO. Don't call this in your release version!
  **/
-+ (void)debug:(BOOL)debug;
++ (void)debugMode:(BOOL)debugMode;
 
 /**
  * Handle openURL.

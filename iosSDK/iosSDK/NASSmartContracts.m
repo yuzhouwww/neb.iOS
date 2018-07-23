@@ -8,16 +8,18 @@
 #import <UIKit/UIKit.h>
 #import "NASSmartContracts.h"
 
-#define NAS_NANO_SCHEMA_URL @"openapp.nasnano://virtual?params=%@"
+#define NAS_NANO_SCHEMA_URL         @"openapp.nasnano://virtual?params=%@"
+#define NAS_NANO_SCHEMA_URL_DEBUG   @"testnet://virtual?params=%@"
 
-#define NAS_CALLBACK_DEBUG @"https://pay.nebulas.io/api/pay"
-#define NAS_CHECK_URL_DEBUG @"https://pay.nebulas.io/api/pay/query?payId=%@"
+#define NAS_CALLBACK_DEBUG          @"https://pay.nebulas.io/api/pay"
+#define NAS_CHECK_URL_DEBUG         @"https://pay.nebulas.io/api/pay/query?payId=%@"
 #define NAS_HOST_DEBUG @"https://testnet.nebulas.io%@"
 
-#define NAS_CALLBACK @"https://pay.nebulas.io/api/mainnet/pay"
-#define NAS_CHECK_URL @"https://pay.nebulas.io/api/mainnet/pay/query?payId=%@"
-#define NAS_HOST @"https://mainnet.nebulas.io%@"
+#define NAS_CALLBACK                @"https://pay.nebulas.io/api/mainnet/pay"
+#define NAS_CHECK_URL               @"https://pay.nebulas.io/api/mainnet/pay/query?payId=%@"
+#define NAS_HOST                    @"https://mainnet.nebulas.io%@"
 
+static NSString *kNASURLScheme = NAS_NANO_SCHEMA_URL;
 static NSString *kNASCallback = NAS_CALLBACK;
 static NSString *kNASCheckUrl = NAS_CHECK_URL;
 
@@ -32,7 +34,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
 
 #pragma mark - public
 
-+ (void)setAppName:(NSString *)name icon:(UIImage *)icon scheme:(NSString *)scheme {
++ (void)setupWithAppName:(NSString *)name icon:(UIImage *)icon scheme:(NSString *)scheme {
     kAppName = name;
     kAppIcon = icon;
     kAppScheme = scheme;
@@ -49,18 +51,20 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
     }];
 }
 
-+ (void)debug:(BOOL)debug {
-    if (debug) {
++ (void)debugMode:(BOOL)debugMode {
+    if (debugMode) {
+        kNASURLScheme = NAS_NANO_SCHEMA_URL_DEBUG;
         kNASCallback = NAS_CALLBACK_DEBUG;
         kNASCheckUrl = NAS_CHECK_URL_DEBUG;
     } else {
+        kNASURLScheme = NAS_NANO_SCHEMA_URL;
         kNASCallback = NAS_CALLBACK;
         kNASCheckUrl = NAS_CHECK_URL;
     }
 }
 
 + (BOOL)nasNanoInstalled {
-    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:NAS_NANO_SCHEMA_URL]];
+    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:kNASURLScheme]];
 }
 
 + (void)goToNasNanoAppStore {
@@ -82,7 +86,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
                  complete:(void (^)(BOOL success, NSString *walletAddress, NSString *message))complete {
     kAuthBlock = complete;
     
-    NSString *url = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
+    NSString *url = [NSString stringWithFormat:kNASURLScheme,
                      [self authQureyValueWithInfo:info]];
     return [self openUrl:url];
 }
@@ -116,7 +120,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
                            };
     
     kPayBlock = complete;
-    NSString *urlString = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
+    NSString *urlString = [NSString stringWithFormat:kNASURLScheme,
                      [self queryValueWithSerialNumber:sn andInfo:info]];
     return [self openUrl:urlString];
 }
@@ -155,7 +159,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
                            };
     
     kPayBlock = complete;
-    NSString *urlString = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
+    NSString *urlString = [NSString stringWithFormat:kNASURLScheme,
                            [self queryValueWithSerialNumber:sn andInfo:info]];
     return [self openUrl:urlString];
 }
@@ -194,7 +198,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
                            };
     
     kPayBlock = complete;
-    NSString *urlString = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
+    NSString *urlString = [NSString stringWithFormat:kNASURLScheme,
                      [self queryValueWithSerialNumber:sn andInfo:info]];
     return [self openUrl:urlString];
 }
@@ -231,7 +235,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
                            };
     
     kPayBlock = complete;
-    NSString *urlString = [NSString stringWithFormat:NAS_NANO_SCHEMA_URL,
+    NSString *urlString = [NSString stringWithFormat:kNASURLScheme,
                            [self queryValueWithSerialNumber:sn andInfo:info]];
     return [self openUrl:urlString];
 }
@@ -264,11 +268,12 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
 }
 
 + (BOOL)handleURL:(NSURL *)url {
-    NSString *prefix = [NSString stringWithFormat:@"%@://virtual?params=", kAppScheme];
-    if (![url.absoluteString.lowercaseString containsString:@"://virtual?params="]) {
+    NSString *urlFragment = @"://nasnano?params=";
+    if (![url.absoluteString containsString:urlFragment]) {
         return NO;
     }
-    NSString *params = [url.absoluteString substringFromIndex:prefix.length].stringByRemovingPercentEncoding;
+    NSRange range = [url.absoluteString rangeOfString:urlFragment];
+    NSString *params = [url.absoluteString substringFromIndex:range.location + range.length].stringByRemovingPercentEncoding;
     return [self handleURLParams:params];
 }
 
@@ -281,6 +286,9 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
         [[UIApplication sharedApplication] openURL:url];
         return nil;
     }
+    
+    kPayBlock = nil;
+    kAuthBlock = nil;
     return [NSError errorWithDomain:@"Need NasNano"
                                code:-1
                            userInfo:@{
@@ -288,7 +296,6 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
                                       }];
 }
 
-///handel openURL data
 + (BOOL)handleURLParams:(NSString *)params {
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:[params dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     if ([dict isKindOfClass:NSDictionary.class]) {
