@@ -16,9 +16,10 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    //Congif SDK
     [NASSmartContracts setupWithAppName:@"NebPay demo" icon:[UIImage imageNamed:@"icon"] scheme:@"sdk.demo"];
-    [NASSmartContracts debugMode:YES];
+    //Uncomment the next line if you want to test your app in NAS TESTNET
+    //[NASSmartContracts debugMode:YES];
     return YES;
 }
 
@@ -49,6 +50,7 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+//before iOS 9
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     if ([NASSmartContracts handleURL:url]) {
         return YES;
@@ -56,6 +58,7 @@
     return YES;
 }
 
+//after iOS 9
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
     if ([NASSmartContracts handleURL:url]) {
         return YES;

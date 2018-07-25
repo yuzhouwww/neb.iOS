@@ -24,7 +24,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLIconFile</key>
-			<string>icon@3x</string>
+			<string></string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>sdk.demo</string>
