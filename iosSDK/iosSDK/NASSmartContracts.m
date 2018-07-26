@@ -91,7 +91,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
     return [self openUrl:url];
 }
 
-+ (NSError *)payNas:(NSNumber *)nas
++ (NSError *)payNas:(NSNumber *)amount
           toAddress:(NSString *)address
            gasLimit:(NSString *)gasLimit
            gasPrice:(NSString *)gasPrice
@@ -100,7 +100,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
         description:(NSString *)desc
         callbackURL:(NSString *)url
            complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete {
-    NSNumber *wei = @(1000000000000000000L * [nas doubleValue]);
+    NSNumber *wei = @(1000000000000000000L * [amount doubleValue]);
     NSDictionary *info = @{
                            @"goods" : @{
                                    @"name" : name ?: @"",
@@ -121,11 +121,11 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
     
     kPayBlock = complete;
     NSString *urlString = [NSString stringWithFormat:kNASURLScheme,
-                     [self queryValueWithSerialNumber:sn andInfo:info]];
+                     [self queryStringWithSerialNumber:sn andInfo:info]];
     return [self openUrl:urlString];
 }
 
-+ (NSError *)payNrc20:(NSNumber *)nrc
++ (NSError *)payNRC20:(NSNumber *)amount
             toAddress:(NSString *)address
              gasLimit:(NSString *)gasLimit
              gasPrice:(NSString *)gasPrice
@@ -134,7 +134,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
           description:(NSString *)desc
           callbackURL:(NSString *)url
              complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete {
-    NSString *value = [NSString stringWithFormat:@"%lld", [nrc longLongValue]];
+    NSString *value = [NSString stringWithFormat:@"%lld", [amount longLongValue]];
     NSArray *args = @[address ?: @"", value];
     NSData *argsData = [NSJSONSerialization dataWithJSONObject:args options:0 error:nil];
     
@@ -160,13 +160,13 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
     
     kPayBlock = complete;
     NSString *urlString = [NSString stringWithFormat:kNASURLScheme,
-                           [self queryValueWithSerialNumber:sn andInfo:info]];
+                           [self queryStringWithSerialNumber:sn andInfo:info]];
     return [self openUrl:urlString];
 }
 
 + (NSError *)callMethod:(NSString *)method
                withArgs:(NSArray *)args
-                 payNas:(NSNumber *)nas
+                 payNas:(NSNumber *)amount
               toAddress:(NSString *)address
                gasLimit:(NSString *)gasLimit
                gasPrice:(NSString *)gasPrice
@@ -175,7 +175,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
             description:(NSString *)desc
             callbackURL:(NSString *)url
                complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete {
-    NSNumber *wei = @(1000000000000000000L * [nas doubleValue]);
+    NSNumber *wei = @(1000000000000000000L * [amount doubleValue]);
     NSData *argsData = [NSJSONSerialization dataWithJSONObject:args options:0 error:nil];
     NSDictionary *info = @{
                            @"goods" : @{
@@ -199,7 +199,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
     
     kPayBlock = complete;
     NSString *urlString = [NSString stringWithFormat:kNASURLScheme,
-                     [self queryValueWithSerialNumber:sn andInfo:info]];
+                     [self queryStringWithSerialNumber:sn andInfo:info]];
     return [self openUrl:urlString];
 }
 
@@ -236,14 +236,14 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
     
     kPayBlock = complete;
     NSString *urlString = [NSString stringWithFormat:kNASURLScheme,
-                           [self queryValueWithSerialNumber:sn andInfo:info]];
+                           [self queryStringWithSerialNumber:sn andInfo:info]];
     return [self openUrl:urlString];
 }
 
-+ (void)checkStatusWithSerialNumber:(NSString *)number
++ (void)checkStatusWithSerialNumber:(NSString *)sn
               withCompletionHandler:(void (^)(NSDictionary *data))handler
                        errorHandler:(void (^)(NSInteger code, NSString *msg))errorHandler {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:kNASCheckUrl, number]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:kNASCheckUrl, sn]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *sessionDataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -331,9 +331,7 @@ static void (^kPayBlock)(BOOL success, NSString *txHash, NSString *message);
     return NO;
 }
 
-
-///generate query string
-+ (NSString *)queryValueWithSerialNumber:(NSString *)sn andInfo:(NSDictionary *)info {
++ (NSString *)queryStringWithSerialNumber:(NSString *)sn andInfo:(NSDictionary *)info {
     NSMutableDictionary *dict = [NSMutableDictionary
                                  dictionaryWithDictionary:@{
                                                             @"category" : @"jump",

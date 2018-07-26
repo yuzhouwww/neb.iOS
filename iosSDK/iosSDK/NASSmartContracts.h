@@ -21,7 +21,7 @@
 + (void)setupWithAppName:(NSString *)name icon:(UIImage *)icon scheme:(NSString *)scheme;
 
 /**
- * Set debug mode. Default is NO. Don't call this in your release version!
+ * Set debug mode. Default is NO. Don't call this in your product release!
  **/
 + (void)debugMode:(BOOL)debugMode;
 
@@ -31,12 +31,12 @@
 + (BOOL)handleURL:(NSURL *)url;
 
 /**
- * Check if NasNano is installed.
+ * Check if NAS nano app is installed.
  **/
 + (BOOL)nasNanoInstalled;
 
 /**
- * Go to appstore for NasNano.
+ * Go to NAS nano page in App Store.
  **/
 + (void)goToNasNanoAppStore;
 
@@ -54,10 +54,22 @@
 + (NSError *)authWithInfo:(nullable NSDictionary *)info
                  complete:(void (^)(BOOL success, NSString *walletAddress, NSString *message))complete;
 
+
 /**
- * Pay for goods. Return nil if success.
- **/
-+ (NSError *)payNas:(NSNumber *)nas
+ Pay with NAS
+
+ @param amount amount of NAS
+ @param address address to pay to
+ @param gasLimit max limit of gas
+ @param gasPrice price you wish to pay for a gas
+ @param sn serial number of this payment
+ @param name goods name
+ @param desc payment description
+ @param url callback url which can receive the payment result
+ @param complete callback block
+ @return if user didn't install NAS nano app, this method will return an error
+ */
++ (NSError *)payNas:(NSNumber *)amount
           toAddress:(NSString *)address
            gasLimit:(NSString *)gasLimit
            gasPrice:(NSString *)gasPrice
@@ -68,9 +80,19 @@
            complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete;
 
 /**
- * Pay for goods. Return nil if success.
+ * Pay with NAS
+ 
+ @param amount amount of NAS
+ @param address address to pay to
+ @param gasLimit max limit of gas
+ @param gasPrice price you wish to pay for a gas
+ @param sn serial number of this payment
+ @param name goods name
+ @param desc payment description
+ @param url callback url which can receive the payment result
+ @param complete callback block
  **/
-+ (NSError *)payNrc20:(NSNumber *)nrc
++ (NSError *)payNRC20:(NSNumber *)amount
             toAddress:(NSString *)address
              gasLimit:(NSString *)gasLimit
              gasPrice:(NSString *)gasPrice
@@ -81,11 +103,24 @@
              complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete;
 
 /**
- * Call a smart contract function. Return nil if success.
+ * Call a smart contract function
+ 
+ @param method method to call
+ @param args arguments to pass
+ @param amount amount of NAS
+ @param address wallet address you are about to transfer NAS to
+ @param gasLimit max limit of gas
+ @param gasPrice price you wish to pay for a gas
+ @param sn serial number of this payment
+ @param name goods name
+ @param desc payment description
+ @param url callback url which can receive the payment result
+ @param complete callback block
+ @return if user didn't install NAS nano app, this method will return an error
  **/
 + (NSError *)callMethod:(NSString *)method
                withArgs:(NSArray *)args
-                 payNas:(NSNumber *)nas
+                 payNas:(NSNumber *)amount
               toAddress:(NSString *)address
                gasLimit:(NSString *)gasLimit
                gasPrice:(NSString *)gasPrice
@@ -95,9 +130,20 @@
             callbackURL:(NSString *)url
                complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete;
 
+
 /**
- * Deploy a smart contract. Return nil if success.
- **/
+ Deploy a contract
+
+ @param source source code
+ @param sourceType type of the source code, available values are "javascript" and "typescript"
+ @param binary optional
+ @param gasLimit max limit of gas
+ @param gasPrice price you wish to pay for a gas
+ @param sn serial number of this payment
+ @param url callback url which can receive the payment result
+ @param complete callback block
+ @return if user didn't install NAS nano app, this method will return an error
+ */
 + (NSError *)deployContractWithSource:(NSString *)source
                            sourceType:(NSString *)sourceType
                                binary:(NSString *)binary
@@ -108,9 +154,9 @@
                              complete:(void (^)(BOOL success, NSString *txHash, NSString *message))complete;
 
 /**
- * Check status for an action.
+ * Check transfer's status with a serial number.
  **/
-+ (void)checkStatusWithSerialNumber:(NSString *)number
++ (void)checkStatusWithSerialNumber:(NSString *)sn
               withCompletionHandler:(void (^)(NSDictionary *data))handler
                        errorHandler:(void (^)(NSInteger code, NSString *msg))errorHandler;
 

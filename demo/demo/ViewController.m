@@ -231,7 +231,7 @@
         if ([button.titleLabel.text isEqualToString:@"Check"]) {
             [self check];
         } else {
-            [self payNrc20To:[self inputAtIndex:0 view:self.inputScrollView] value:[self inputAtIndex:1 view:self.inputScrollView]];
+            [self payNRC20To:[self inputAtIndex:0 view:self.inputScrollView] value:[self inputAtIndex:1 view:self.inputScrollView]];
         }
     } else if ([segmentTitle isEqualToString:@"CALL"]) {
         if ([button.titleLabel.text isEqualToString:@"Check"]) {
@@ -299,10 +299,10 @@
     }
 }
 
-- (void)payNrc20To:(NSString *)to value:(NSString *)value {
+- (void)payNRC20To:(NSString *)to value:(NSString *)value {
     self.sn = [NASSmartContracts randomSerialNumber];
     __weak typeof(self) wself = self;
-    NSError *error = [NASSmartContracts payNrc20:[NSNumber numberWithLongLong:value.longLongValue]
+    NSError *error = [NASSmartContracts payNRC20:[NSNumber numberWithLongLong:value.longLongValue]
                                        toAddress:to
                                         gasLimit:self.gasLimit
                                         gasPrice:self.gasPrice
