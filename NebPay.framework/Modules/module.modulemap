@@ -1,0 +1,6 @@
+framework module NebPay {
+  umbrella header "NebPay.h"
+
+  export *
+  module * { export * }
+}

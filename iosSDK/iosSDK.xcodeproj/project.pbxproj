@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B530A3F02109BD08001CE1C1 /* NebPay.h in Headers */ = {isa = PBXBuildFile; fileRef = B530A3EE2109BD08001CE1C1 /* NebPay.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B530A3F42109BEC6001CE1C1 /* NASSmartContracts.h in Headers */ = {isa = PBXBuildFile; fileRef = C54D3D8A20BDA0FF0033C2B3 /* NASSmartContracts.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B530A3F52109BECC001CE1C1 /* NASApi.h in Headers */ = {isa = PBXBuildFile; fileRef = C54D3D9120C283F10033C2B3 /* NASApi.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C54D3D4D20BC49790033C2B3 /* NASSmartContracts.m in Sources */ = {isa = PBXBuildFile; fileRef = C54D3D4C20BC49790033C2B3 /* NASSmartContracts.m */; };
 		C54D3D8B20BDA0FF0033C2B3 /* NASSmartContracts.h in Headers */ = {isa = PBXBuildFile; fileRef = C54D3D8A20BDA0FF0033C2B3 /* NASSmartContracts.h */; };
 		C54D3D9320C283F10033C2B3 /* NASApi.h in Headers */ = {isa = PBXBuildFile; fileRef = C54D3D9120C283F10033C2B3 /* NASApi.h */; };
@@ -26,6 +29,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B530A3EC2109BD08001CE1C1 /* NebPay.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NebPay.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B530A3EE2109BD08001CE1C1 /* NebPay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NebPay.h; sourceTree = "<group>"; };
+		B530A3EF2109BD08001CE1C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C54D3D0E20BC47B90033C2B3 /* libiosSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libiosSDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C54D3D4C20BC49790033C2B3 /* NASSmartContracts.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NASSmartContracts.m; sourceTree = "<group>"; };
 		C54D3D8A20BDA0FF0033C2B3 /* NASSmartContracts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NASSmartContracts.h; sourceTree = "<group>"; };
@@ -34,6 +40,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B530A3E92109BD08001CE1C1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C54D3D0B20BC47B90033C2B3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -44,10 +57,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B530A3ED2109BD08001CE1C1 /* NebPay */ = {
+			isa = PBXGroup;
+			children = (
+				B530A3EE2109BD08001CE1C1 /* NebPay.h */,
+				B530A3EF2109BD08001CE1C1 /* Info.plist */,
+			);
+			path = NebPay;
+			sourceTree = "<group>";
+		};
 		C54D3D0520BC47B90033C2B3 = {
 			isa = PBXGroup;
 			children = (
 				C54D3D1020BC47B90033C2B3 /* iosSDK */,
+				B530A3ED2109BD08001CE1C1 /* NebPay */,
 				C54D3D0F20BC47B90033C2B3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				C54D3D0E20BC47B90033C2B3 /* libiosSDK.a */,
+				B530A3EC2109BD08001CE1C1 /* NebPay.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -74,6 +98,16 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		B530A3E72109BD08001CE1C1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B530A3F02109BD08001CE1C1 /* NebPay.h in Headers */,
+				B530A3F42109BEC6001CE1C1 /* NASSmartContracts.h in Headers */,
+				B530A3F52109BECC001CE1C1 /* NASApi.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C54D3D5120BC539B0033C2B3 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -86,6 +120,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		B530A3EB2109BD08001CE1C1 /* NebPay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B530A3F32109BD08001CE1C1 /* Build configuration list for PBXNativeTarget "NebPay" */;
+			buildPhases = (
+				B530A3E72109BD08001CE1C1 /* Headers */,
+				B530A3E82109BD08001CE1C1 /* Sources */,
+				B530A3E92109BD08001CE1C1 /* Frameworks */,
+				B530A3EA2109BD08001CE1C1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NebPay;
+			productName = NebPay;
+			productReference = B530A3EC2109BD08001CE1C1 /* NebPay.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		C54D3D0D20BC47B90033C2B3 /* iosSDK */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C54D3D1720BC47B90033C2B3 /* Build configuration list for PBXNativeTarget "iosSDK" */;
@@ -112,6 +164,9 @@
 			attributes = {
 				LastUpgradeCheck = 0930;
 				TargetAttributes = {
+					B530A3EB2109BD08001CE1C1 = {
+						CreatedOnToolsVersion = 10.0;
+					};
 					C54D3D0D20BC47B90033C2B3 = {
 						CreatedOnToolsVersion = 9.3;
 					};
@@ -130,11 +185,29 @@
 			projectRoot = "";
 			targets = (
 				C54D3D0D20BC47B90033C2B3 /* iosSDK */,
+				B530A3EB2109BD08001CE1C1 /* NebPay */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		B530A3EA2109BD08001CE1C1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		B530A3E82109BD08001CE1C1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C54D3D0A20BC47B90033C2B3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -147,6 +220,72 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		B530A3F12109BD08001CE1C1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = NO;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = L49468Q2VD;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = NebPay/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LINK_WITH_STANDARD_LIBRARIES = NO;
+				MACH_O_TYPE = staticlib;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nebulas.NebPay;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		B530A3F22109BD08001CE1C1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = NO;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = L49468Q2VD;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = NebPay/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LINK_WITH_STANDARD_LIBRARIES = NO;
+				MACH_O_TYPE = staticlib;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nebulas.NebPay;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		C54D3D1520BC47B90033C2B3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -286,6 +425,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B530A3F32109BD08001CE1C1 /* Build configuration list for PBXNativeTarget "NebPay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B530A3F12109BD08001CE1C1 /* Debug */,
+				B530A3F22109BD08001CE1C1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C54D3D0920BC47B90033C2B3 /* Build configuration list for PBXProject "iosSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
