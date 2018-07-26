@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		52A98E8B9D525F7DD53F5FD9 /* libPods-demo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37569FA528BDB95AC312652D /* libPods-demo.a */; };
-		B5C3ADF620F75E0300D5D8FC /* libiosSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C54D3D8720BDA0790033C2B3 /* libiosSDK.a */; };
 		C54D3D2820BC48240033C2B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C54D3D2720BC48240033C2B3 /* AppDelegate.m */; };
 		C54D3D2B20BC48240033C2B3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C54D3D2A20BC48240033C2B3 /* ViewController.m */; };
 		C54D3D2E20BC48240033C2B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C54D3D2C20BC48240033C2B3 /* Main.storyboard */; };
@@ -16,23 +15,6 @@
 		C54D3D3320BC48250033C2B3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C54D3D3120BC48250033C2B3 /* LaunchScreen.storyboard */; };
 		C54D3D3620BC48250033C2B3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C54D3D3520BC48250033C2B3 /* main.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		B5C3ADF420F75C3D00D5D8FC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C54D3D8220BDA0790033C2B3 /* iosSDK.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = C54D3D0D20BC47B90033C2B3;
-			remoteInfo = iosSDK;
-		};
-		C54D3D8620BDA0790033C2B3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C54D3D8220BDA0790033C2B3 /* iosSDK.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = C54D3D0E20BC47B90033C2B3;
-			remoteInfo = iosSDK;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		37569FA528BDB95AC312652D /* libPods-demo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-demo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -49,7 +31,6 @@
 		C54D3D3420BC48250033C2B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C54D3D3520BC48250033C2B3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C54D3D4F20BC50C70033C2B3 /* libiosSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libiosSDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		C54D3D8220BDA0790033C2B3 /* iosSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = iosSDK.xcodeproj; path = ../iosSDK/iosSDK.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +38,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5C3ADF620F75E0300D5D8FC /* libiosSDK.a in Frameworks */,
 				52A98E8B9D525F7DD53F5FD9 /* libPods-demo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -77,7 +57,6 @@
 		C54D3D1A20BC48240033C2B3 = {
 			isa = PBXGroup;
 			children = (
-				C54D3D8220BDA0790033C2B3 /* iosSDK.xcodeproj */,
 				C54D3D2520BC48240033C2B3 /* demo */,
 				C54D3D2420BC48240033C2B3 /* Products */,
 				C54D3D4E20BC50C70033C2B3 /* Frameworks */,
@@ -118,14 +97,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		C54D3D8320BDA0790033C2B3 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				C54D3D8720BDA0790033C2B3 /* libiosSDK.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -153,7 +124,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				B5C3ADF520F75C3D00D5D8FC /* PBXTargetDependency */,
 			);
 			name = demo;
 			productName = demo;
@@ -185,28 +155,12 @@
 			mainGroup = C54D3D1A20BC48240033C2B3;
 			productRefGroup = C54D3D2420BC48240033C2B3 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = C54D3D8320BDA0790033C2B3 /* Products */;
-					ProjectRef = C54D3D8220BDA0790033C2B3 /* iosSDK.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				C54D3D2220BC48240033C2B3 /* demo */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		C54D3D8720BDA0790033C2B3 /* libiosSDK.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libiosSDK.a;
-			remoteRef = C54D3D8620BDA0790033C2B3 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C54D3D2120BC48240033C2B3 /* Resources */ = {
@@ -272,14 +226,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		B5C3ADF520F75C3D00D5D8FC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = iosSDK;
-			targetProxy = B5C3ADF420F75C3D00D5D8FC /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		C54D3D2C20BC48240033C2B3 /* Main.storyboard */ = {
@@ -352,7 +298,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../iosSDK/iosSDK\"";
+				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -405,7 +351,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../iosSDK/iosSDK\"";
+				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
@@ -420,7 +366,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L49468Q2VD;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../iosSDK/iosSDK\"/**";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = demo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -440,7 +386,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L49468Q2VD;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../iosSDK/iosSDK\"/**";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = demo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
