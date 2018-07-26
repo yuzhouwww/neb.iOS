@@ -8,6 +8,6 @@ target 'demo' do
   # Pods for demo
   pod 'IQKeyboardManager'
 
-  # pod 'NebPay', :path => '/Users/yuzhou/Workspace/neb.iOS'
-  pod 'NebPay', :git => 'https://github.com/yuzhouwww/neb.iOS.git', :branch => 'develop'
+  pod 'NebPay', :path => '/Users/yuzhou/Workspace/neb.iOS'
+  # pod 'NebPay', :git => 'https://github.com/yuzhouwww/neb.iOS.git', :branch => 'develop'
 end
