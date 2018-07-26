@@ -4,7 +4,7 @@ PODS:
 
 DEPENDENCIES:
   - IQKeyboardManager
-  - NebPay (from `/Users/yuzhou/Workspace/neb.iOS`)
+  - NebPay (from `https://github.com/yuzhouwww/neb.iOS.git`, branch `develop`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -12,12 +12,18 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   NebPay:
-    :path: "/Users/yuzhou/Workspace/neb.iOS"
+    :branch: develop
+    :git: https://github.com/yuzhouwww/neb.iOS.git
+
+CHECKOUT OPTIONS:
+  NebPay:
+    :commit: 02b2b12617d64edc0c6e9ac8959ad95c6f38ed7d
+    :git: https://github.com/yuzhouwww/neb.iOS.git
 
 SPEC CHECKSUMS:
   IQKeyboardManager: 29514134ef0334a6fa33cf4eee11c36c064baeaf
-  NebPay: 766f0f8a68a02c2bcb7a9831034c9b6f07454683
+  NebPay: 5cf8cc037240a2c2ba85f52a88dcf22af81df848
 
-PODFILE CHECKSUM: 87861fa2567c9fd877c7fbb4d877f8a6b7e621cf
+PODFILE CHECKSUM: 7911830dc5e8f88876bbca768170b6a51404f21c
 
 COCOAPODS: 1.5.3
