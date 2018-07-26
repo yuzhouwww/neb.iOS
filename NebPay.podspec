@@ -9,6 +9,7 @@ Pod::Spec.new do |spec|
  #spec.source_files = 'iosSDK/iosSDK/*.{h,m}'
   spec.vendored_frameworks  = 'NebPay.framework'
   spec.platform             = :ios, '8.0'
+  s.frameworks              = 'UIKit'
   spec.static_framework     = true
   spec.documentation_url    = 'https://developers.nebulas.io/dapp/nebpay-installation'
 end

@@ -17,7 +17,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   NebPay:
-    :commit: eef9c73248709ca3a818d30f16aecd6762822168
+    :commit: ad9b0f33abb0741e68bf699c3aed4c58b75bd240
     :git: https://github.com/yuzhouwww/neb.iOS.git
 
 SPEC CHECKSUMS:

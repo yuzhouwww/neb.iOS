@@ -6,7 +6,7 @@
 //
 
 #import "AppDelegate.h"
-#import <NebPay/NebPay.h>
+@import NebPay;
 
 @interface AppDelegate ()
 

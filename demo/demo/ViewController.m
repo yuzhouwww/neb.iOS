@@ -6,7 +6,7 @@
 //
 
 #import "ViewController.h"
-#import <NebPay/NebPay.h>
+@import NebPay;
 
 #define ViewTagOffset 100
 
