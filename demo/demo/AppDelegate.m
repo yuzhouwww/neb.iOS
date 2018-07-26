@@ -6,7 +6,7 @@
 //
 
 #import "AppDelegate.h"
-#import <NASSmartContracts.h>
+#import <NebPay/NebPay.h>
 
 @interface AppDelegate ()
 

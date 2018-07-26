@@ -6,7 +6,7 @@
 //
 
 #import "ViewController.h"
-#import <NASSmartContracts.h>
+#import <NebPay/NebPay.h>
 
 #define ViewTagOffset 100
 
