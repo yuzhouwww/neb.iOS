@@ -1,24 +1,24 @@
-#NebPay
+# NebPay
 NebPay is an official iOS SDK of NAS nano App, provides several APIs to pay with NAS/NRC20, authenticate, even deploy a smart contract.
 
-#Installation
+# Installation
 
-###CocoaPods
+### CocoaPods
 ```pod 'NebPay'```
 
-###Carthage
+### Carthage
 ```github "nebulasio/neb.iOS"```
 
-###Manually
+### Manually
 1. Clone this repo. 
 2. Drag ```NebPay.framework``` to your project.
 3. Done!
 
-#Usage
+# Usage
 
-###Import
+### Import
 ```@import NebPay;```
-###Configuration
+### Configuration
 Firstly, If you don't have any URL Scheme for your app, you should add one like this:
 ![add_url_scheme](screenshot/add_url_scheme.png)
 
@@ -52,9 +52,9 @@ and，
 ```
 That is all the preparation work.
 
-#API
+# API
 
-###1. Pay(NAS)
+### 1. Pay(NAS)
 Firstly, create a serial number
 ```objective-c
 self.sn = [NASSmartContracts randomSerialNumber];
@@ -95,7 +95,7 @@ If you don't provide a custom callbackURL, SDK will use its default callbackURL,
                              }];
 ```
 
-###2. Pay(NRC20)
+### 2. Pay(NRC20)
 Just like NAS
 ```objective-c
 [NASSmartContracts payNRC20:@(1)
@@ -115,7 +115,7 @@ Just like NAS
                       }];
 ```
 
-###3. Call custom function
+### 3. Call custom function
 ```objective-c
 [NASSmartContracts callMethod:method
                      withArgs:argsArray
@@ -135,7 +135,7 @@ Just like NAS
                               }
                         }];
 ```
-###4. Deploy a contract
+### 4. Deploy a contract
 ```objective-c
 [NASSmartContracts deployContractWithSource:source
                                  sourceType:sourceType
@@ -152,7 +152,7 @@ Just like NAS
                                             }
                                      }];
 ```
-###5. Wallet authentication
+### 5. Wallet authentication
 ```objective-c
 [NASSmartContracts authWithInfo:nil
                        complete:^(BOOL success, NSString *walletAddress, NSString *message) {
