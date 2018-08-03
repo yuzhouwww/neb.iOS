@@ -1,116 +1,165 @@
-# Install
+#NebPay
+NebPay is an official iOS SDK of NAS nano App, provides several APIs to pay with NAS/NRC20, authenticate, even deploy a smart contract.
 
-### 1. Git clone this repo.
+#Installation
 
-### 2. Drag iosSDK.xcodeproj file to your project.
+###CocoaPods
+```pod 'NebPay'```
 
-![1](https://github.com/nebulasio/iosSDK/blob/master/1.png)
+###Carthage
+```github "nebulasio/neb.iOS"```
 
-### 3. Add link library.
+###Manually
+1. Clone this repo. 
+2. Drag ```NebPay.framework``` to your project.
+3. Done!
 
-![2](https://github.com/nebulasio/iosSDK/blob/master/2.png)
+#Usage
 
-### 4. Add header search path by dragging iosSDK folder to the setting area.
+###Import
+```@import NebPay;```
+###Configuration
+Firstly, If you don't have any URL Scheme for your app, you should add one like this:
+![add_url_scheme](screenshot/add_url_scheme.png)
 
-![3](https://github.com/nebulasio/iosSDK/blob/master/3.png)
-
-# Usage
-
-## Wallet
-
-Import NASSmartContracts.h file.
-
-```obj-c
-#import <NASSmartContracts.h>
-```
-
-### 1. Debug mode
-
-```obj-c
-[NASSmartContracts debug:YES]; // use the debug net
-```
-
-### 2. Check wallet APP
-
-```obj-c
-if (![NASSmartContracts nasNanoInstalled]) {
-    // if wallet APP is not installed, go to AppStore.
-    [NASSmartContracts goToNasNanoAppStore];
+then, in your appDelegate.m
+```objective-c
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    //Config SDK
+    [NASSmartContracts setupWithAppName:YourAppName icon:YourAppIcon scheme:YourAppScheme];
+    //Uncomment the next line if you want to test your app in NAS TESTNET
+    //[NASSmartContracts debugMode:YES];
+    return YES;
 }
 ```
+and，
+```objective-c
+//before iOS 9
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    if ([NASSmartContracts handleURL:url]) {
+        return YES;
+    }
+    return YES;
+}
 
-### 3. Pay
-
-```obj-c
-    self.sn = [NASSmartContracts randomCodeWithLength:32];
-    NSError *error = [NASSmartContracts payNas:@(0.0001)
-                                     toAddress:@"n1a4MqSPPND7d1UoYk32jXqKb5m5s3AN6wB"
-                              withSerialNumber:self.sn
-                                  forGoodsName:@"test1"
-                                       andDesc:@"desc"];
+//after iOS 9
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    if ([NASSmartContracts handleURL:url]) {
+        return YES;
+    }
+    return YES;
+}
 ```
+That is all the preparation work.
 
-### 4. Call contract function
+#API
 
-```obj-c
-    self.sn = [NASSmartContracts randomCodeWithLength:32];
-    NSError *error = [NASSmartContracts callWithMethod:@"save"
-                                               andArgs:@[@"key111", @"value111"]
-                                                payNas:@(0)
-                                             toAddress:@"n1zVUmH3BBebksT4LD5gMiWgNU9q3AMj3se"
-                                      withSerialNumber:self.sn
-                                          forGoodsName:@"test2"
-                                               andDesc:@"desc2"];
+###1. Pay(NAS)
+Firstly, create a serial number
+```objective-c
+self.sn = [NASSmartContracts randomSerialNumber];
 ```
+then
+```objective-c
+NSError *error = [NASSmartContracts payNas:@(1)
+                                 toAddress:to
+                                  gasLimit:nil
+                                  gasPrice:nil
+                              serialNumber:self.sn
+                                 goodsName:@"test1"
+                               description:@"desc1"
+                               callbackURL:nil
+                                  complete:^(BOOL success, NSString *txHash, NSString *message) {
+                                           if (success) {
+                                               NSLog(@"Succeed! txHash:\n%@", txHash);
+                                           } else {
+                                               NSLog(@"Failed, error: %@", message ?: @"unknown error");
+                                           }
+                                 }];
+```
+If user didn't install NAS nano, this method will return a NSError instance. It's better to check this situation by ```[NASSmartContracts nasNanoInstalled]``` before sending the request.
 
-### 5. Check status
-
-```obj-c
-    [NASSmartContracts checkStatusWithSerialNumber:self.sn
-                             withCompletionHandler:^(NSDictionary *data) {
+If you provide a custom callbackURL, a post method request will be send to it when the payment is done, whose body is like: 
+```
+{"payId": SerailNumberOfThePayment, "txHash": HashOfTheTransaction }
+```
+If you don't provide a custom callbackURL, SDK will use its default callbackURL, then you can query the payment status like this:
+```objective-c
+[NASSmartContracts checkStatusWithSerialNumber:self.sn
+                         withCompletionHandler:^(NSDictionary *data) {
                                  NSData *json = [NSJSONSerialization dataWithJSONObject:data options:NSJSONWritingPrettyPrinted error:nil];
                                  NSString *string = [[NSString alloc] initWithData:json encoding:NSUTF8StringEncoding];
-                                 NSLog(@"%@", string);
+                                 NSLog(@"data: %@", string);
                              } errorHandler:^(NSInteger code, NSString *msg) {
-                                 NSLog(@"%@", msg);
+                                 NSLog(@"error: %@", msg);
                              }];
 ```
 
-## API
-
-Import NASApi.h file.
-
-```obj-c
-#import <NASApi.h>
+###2. Pay(NRC20)
+Just like NAS
+```objective-c
+[NASSmartContracts payNRC20:@(1)
+                  toAddress:to
+                   gasLimit:nil
+                   gasPrice:nil
+               serialNumber:self.sn
+                  goodsName:@"test2"
+                description:@"des2"
+                callbackURL:nil
+                   complete:^(BOOL success, NSString *txHash, NSString *message) {
+                            if (success) {
+                                NSLog(@"Succeed! txHash:\n%@", txHash);
+                            } else {
+                                NSLog(@"Failed, error: %@", message ?: @"unknown error");
+                            }
+                      }];
 ```
 
-### 1. Debug mode
-
-Debug mode will connect to the debug net.
-
-```obj-c
-[NASApi debug:YES]; // use the debug net
+###3. Call custom function
+```objective-c
+[NASSmartContracts callMethod:method
+                     withArgs:argsArray
+                       payNas:@(1)
+                    toAddress:to
+                     gasLimit:nil
+                     gasPrice:nil
+                 serialNumber:self.sn
+                    goodsName:@"test3"
+                  description:@"desc3"
+                  callbackURL:nil
+                     complete:^(BOOL success, NSString *txHash, NSString *message) {
+                              if (success) {
+                                  NSLog(@"Succeed! txHash:\n%@", txHash);
+                              } else {
+                                  NSLog(@"Failed, error: %@", message ?: @"unknown error");
+                              }
+                        }];
 ```
-
-### 2. call API
-
-See the [API document](https://github.com/nebulasio/wiki/blob/e340e736c6756d54bca7a655e432db9f9a257544/rpc.md).
-
-We do not define model for response and return a dictionary instead. You can use your favorite json library to parse the data.
-
+###4. Deploy a contract
+```objective-c
+[NASSmartContracts deployContractWithSource:source
+                                 sourceType:sourceType
+                                     binary:nil
+                                   gasLimit:nil
+                                   gasPrice:nil
+                               serialNumber:self.sn
+                                callbackURL:nil 
+                                   complete:^(BOOL success, NSString *txHash, NSString *message) {
+                                            if (success) {
+                                                NSLog(@"Succeed! txHash:\n%@", txHash);
+                                            } else {
+                                                NSLog(@"Failed, error: %@", message ?: @"unknown error");
+                                            }
+                                     }];
 ```
-completionHandler:(void (^)(NSDictionary *data))handler
-errorHandler:(void (^)(NSString *msg))errorHandler
-```
-
-### 3. Contract
-
-You can form a contract by calling `contractWithSource:andSourceType:andFunction:andArgs`.
-
-```
-    [NASApi contractWithSource:nil
-                 andSourceType:nil
-                   andFunction:@"transferValue"
-                       andArgs:[@(500)]];
-
+###5. Wallet authentication
+```objective-c
+[NASSmartContracts authWithInfo:nil
+                       complete:^(BOOL success, NSString *walletAddress, NSString *message) {
+                                if (success) {
+                                    NSLog(@"Succeed! Wallet address:\n%@", walletAddress);
+                                } else {
+                                    NSLog(@"Failed, error: %@", message ?: @"unknown error");
+                                }
+                         }];
 ```
